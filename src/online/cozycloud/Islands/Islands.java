@@ -1,4 +1,4 @@
-package org.cozycloud.Islands;
+package online.cozycloud.Islands;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

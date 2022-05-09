@@ -2,4 +2,4 @@ name: Islands
 authors: [ChickenSaysBak, CozyCloud, mangoman69420, Vulcran7567]
 version: ${project.version}
 api-version: 1.18
-main: org.cozycloud.Islands.Islands
+main: online.cozycloud.Islands.Islands
