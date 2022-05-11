@@ -1,5 +1,7 @@
 package online.cozycloud.Islands;
 
+import online.cozycloud.Islands.Commands.IslandsAdminCommand;
+import online.cozycloud.Islands.Commands.IslandsCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Islands extends JavaPlugin {
@@ -15,6 +17,9 @@ public class Islands extends JavaPlugin {
 
         instance = this;
         config = new Config();
+
+        getCommand("islands").setExecutor(new IslandsCommand());
+        getCommand("islandsadmin").setExecutor(new IslandsAdminCommand());
 
     }
 
