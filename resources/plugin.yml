@@ -2,6 +2,7 @@ name: Islands
 authors: [ChickenSaysBak, CozyCloud, mangoman69420, Vulcran7567]
 version: ${project.version}
 api-version: 1.18
+depend: [FastAsyncWorldEdit]
 main: online.cozycloud.Islands.Islands
 commands:
   islands:
