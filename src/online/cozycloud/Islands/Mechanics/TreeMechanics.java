@@ -1,18 +1,15 @@
 package online.cozycloud.Islands.Mechanics;
 
-import org.bukkit.Bukkit;
+import online.cozycloud.Islands.Islands;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Sapling;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.inventory.EquipmentSlot;
+
+import java.io.File;
 
 public class TreeMechanics implements Listener {
 
@@ -24,9 +21,13 @@ public class TreeMechanics implements Listener {
 
         if (origin != null) {
 
+            //Removes saplings
+            for (int x = 0; x < 2; ++x) for (int z = 0; z < 2; ++z) origin.getLocation().clone().add(x, 0, z).getBlock().setType(Material.AIR);
             event.setCancelled(true);
 
-            // CUSTOM TREE PASTING
+            //Temporary test schematic
+            File file = new File(Islands.getInstance().getDataFolder(), "ae.schem");
+            Islands.pasteSchematic(file, origin.getLocation(), false);
 
         }
 
