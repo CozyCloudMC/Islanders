@@ -2,6 +2,8 @@ package online.cozycloud.islands;
 
 import online.cozycloud.islands.commands.IslandsAdminCommand;
 import online.cozycloud.islands.commands.IslandsCommand;
+import online.cozycloud.islands.mechanics.trees.TreeMechanics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Islands extends JavaPlugin {
@@ -20,6 +22,8 @@ public class Islands extends JavaPlugin {
 
         getCommand("islands").setExecutor(new IslandsCommand());
         getCommand("islandsadmin").setExecutor(new IslandsAdminCommand());
+
+        Bukkit.getPluginManager().registerEvents(new TreeMechanics(), this);
 
     }
 
