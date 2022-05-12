@@ -24,23 +24,8 @@ public class TreeMechanics implements Listener {
 
     private BlockMask treeMask;
 
-    /**
-     * Initializes a mask that only replaces non-solid blocks or soft terrain blocks.
-     */
     public TreeMechanics() {
-
-        ArrayList<Material> canReplace = new ArrayList<Material>();
-
-        //Non-solid blocks
-        for (Material type : Material.values()) if (!type.isSolid()) canReplace.add(type);
-
-        //Soft terrain blocks
-        canReplace.addAll(Arrays.asList(Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
-                Material.PODZOL, Material.MYCELIUM, Material.SAND, Material.RED_SAND, Material.CLAY, Material.MOSS_BLOCK));
-
-        treeMask = new BlockMask();
-        for (Material type : canReplace) treeMask.add(BukkitAdapter.asBlockType(type));
-
+        treeMask = getTreeMask();
     }
 
     @EventHandler
@@ -109,7 +94,7 @@ public class TreeMechanics implements Listener {
     /**
      * Asynchronously pastes a tree schematic at a location.
      * Tree can only replace air and terrain blocks like dirt.
-     * @param type type of tree to paste
+     * @param type tree type to paste
      * @param loc origin
      */
     private void pasteTree(TreeType type, Location loc) {
@@ -133,6 +118,27 @@ public class TreeMechanics implements Listener {
             }
 
         });
+
+    }
+
+    /**
+     * Creates a mask that only replaces non-solid blocks or soft terrain blocks.
+     * @return the mask
+     */
+    private BlockMask getTreeMask() {
+
+        ArrayList<Material> canReplace = new ArrayList<Material>();
+
+        //Non-solid blocks
+        for (Material type : Material.values()) if (!type.isSolid()) canReplace.add(type);
+
+        //Soft terrain blocks
+        canReplace.addAll(Arrays.asList(Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
+                Material.PODZOL, Material.MYCELIUM, Material.SAND, Material.RED_SAND, Material.CLAY, Material.MOSS_BLOCK));
+
+        BlockMask mask = new BlockMask();
+        for (Material type : canReplace) treeMask.add(BukkitAdapter.asBlockType(type));
+        return mask;
 
     }
 
