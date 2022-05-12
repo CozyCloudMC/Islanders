@@ -1,12 +1,13 @@
 package online.cozycloud.islands.mechanics.trees;
 
 import online.cozycloud.islands.Islands;
+import org.bukkit.Material;
 
 import java.io.File;
 
 public enum CustomTree {
 
-    TEST("Test");
+    TEST("Test"), TEST2("Test2");
 
     private String name;
     CustomTree(String name) {this.name = name;}
@@ -21,9 +22,27 @@ public enum CustomTree {
                 fileName = "ae.schem";
                 break;
 
+            case "Test2":
+                fileName = "sus.schem";
+                break;
+
         }
 
         return new File(Islands.getInstance().getDataFolder() + "/schematics/trees", fileName);
+
+    }
+
+    public Material getSapling() {
+
+        switch (name) {
+
+            case "Test":
+            case "Test2":
+                return Material.OAK_SAPLING;
+
+        }
+
+        return null;
 
     }
 

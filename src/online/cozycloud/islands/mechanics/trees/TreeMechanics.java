@@ -22,13 +22,17 @@ import org.bukkit.event.world.StructureGrowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
 
 public class TreeMechanics implements Listener {
 
     private BlockMask treeMask;
+    private HashMap<Material, ArrayList<CustomTree>> possibleTrees = new HashMap<>();
 
     public TreeMechanics() {
         treeMask = createTreeMask();
+        possibleTrees = createPossibleTrees();
     }
 
     @EventHandler
@@ -39,10 +43,13 @@ public class TreeMechanics implements Listener {
 
         if (origin != null) {
 
-            event.setCancelled(true);
+            Material sapling = loc.getBlock().getType();
+            CustomTree tree = getRandomTree(sapling);
 
-            //Temporary test schematic
-            pasteTree(CustomTree.TEST, origin.getLocation());
+            if (tree != null) {
+                event.setCancelled(true);
+                pasteTree(tree, origin.getLocation());
+            }
 
         }
 
@@ -93,6 +100,16 @@ public class TreeMechanics implements Listener {
     }
 
     /**
+     * Gets a random custom tree type.
+     * @param sapling the type of sapling being grown
+     * @return a random tree type
+     */
+    private CustomTree getRandomTree(Material sapling) {
+        ArrayList<CustomTree> trees = new ArrayList<>(possibleTrees.get(sapling));
+        return trees.isEmpty() ? null : trees.get(new Random().nextInt(trees.size()));
+    }
+
+    /**
      * Asynchronously pastes a tree schematic at a location.
      * Tree can only replace air and terrain blocks like dirt.
      * @param type tree type to paste
@@ -139,7 +156,7 @@ public class TreeMechanics implements Listener {
      */
     private BlockMask createTreeMask() {
 
-        ArrayList<Material> canReplace = new ArrayList<Material>();
+        ArrayList<Material> canReplace = new ArrayList<>();
 
         //Non-solid blocks
         for (Material type : Material.values()) if (!type.isSolid()) canReplace.add(type);
@@ -151,6 +168,25 @@ public class TreeMechanics implements Listener {
         BlockMask mask = new BlockMask();
         for (Material type : canReplace) mask.add(BukkitAdapter.asBlockType(type));
         return mask;
+
+    }
+
+    /**
+     * Create a set of possible trees for each sapling type.
+     * @return a set of possible custom trees per sapling
+     */
+    private HashMap<Material, ArrayList<CustomTree>> createPossibleTrees() {
+
+        HashMap<Material, ArrayList<CustomTree>> result = new HashMap<>();
+        Material[] saplings = {Material.OAK_SAPLING, Material.SPRUCE_SAPLING, Material.BIRCH_SAPLING, Material.JUNGLE_SAPLING, Material.ACACIA_SAPLING, Material.DARK_OAK_SAPLING};
+
+        for (Material sapling : saplings) {
+            ArrayList<CustomTree> trees = new ArrayList<>();
+            for (CustomTree type : CustomTree.values()) if (type.getSapling() == sapling) trees.add(type);
+            result.put(sapling, trees);
+        }
+
+        return result;
 
     }
 
