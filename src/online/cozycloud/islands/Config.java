@@ -1,13 +1,9 @@
-package online.cozycloud.Islands;
+package online.cozycloud.islands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class Config {
 

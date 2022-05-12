@@ -1,4 +1,4 @@
-package online.cozycloud.Islands.Commands;
+package online.cozycloud.islands.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
