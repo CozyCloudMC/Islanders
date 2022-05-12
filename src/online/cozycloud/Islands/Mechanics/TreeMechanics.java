@@ -1,6 +1,13 @@
 package online.cozycloud.Islands.Mechanics;
 
+import com.fastasyncworldedit.core.FaweAPI;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.mask.BlockMask;
+import com.sk89q.worldedit.math.BlockVector3;
 import online.cozycloud.Islands.Islands;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.io.File;
+import java.io.IOException;
 
 public class TreeMechanics implements Listener {
 
@@ -27,7 +35,7 @@ public class TreeMechanics implements Listener {
 
             //Temporary test schematic
             File file = new File(Islands.getInstance().getDataFolder(), "ae.schem");
-            Islands.pasteSchematic(file, origin.getLocation(), false);
+            pasteTree(file, origin.getLocation());
 
         }
 
@@ -74,6 +82,42 @@ public class TreeMechanics implements Listener {
         }
 
         return true;
+
+    }
+
+    /**
+     * Asynchronously pastes a tree schematic at a location.
+     * Tree can only replace air and terrain blocks like dirt.
+     * @param file tree schematic
+     * @param loc origin
+     */
+    private void pasteTree(File file, Location loc) {
+
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), new Runnable() {
+
+            @Override
+            public void run() {
+
+                Material[] canReplace = {Material.AIR, Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT,
+                        Material.PODZOL, Material.ROOTED_DIRT, Material.SAND};
+
+                BlockMask mask = new BlockMask();
+                for (Material type : canReplace) mask.add(BukkitAdapter.asBlockType(type));
+
+                EditSession session = WorldEdit.getInstance().newEditSession(FaweAPI.getWorld(loc.getWorld().getName()));
+                session.setMask(mask);
+
+                try {
+                    FaweAPI.load(file).paste(session, BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                session.flushQueue();
+
+            }
+
+        });
 
     }
 
