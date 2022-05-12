@@ -1,4 +1,4 @@
-package online.cozycloud.Islands.Mechanics;
+package online.cozycloud.islands.mechanics.trees;
 
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -6,7 +6,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.math.BlockVector3;
-import online.cozycloud.Islands.Islands;
+import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,10 +16,32 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TreeMechanics implements Listener {
+
+    private BlockMask treeMask;
+
+    /**
+     * Initializes a mask that only replaces non-solid blocks or soft terrain blocks.
+     */
+    public TreeMechanics() {
+
+        ArrayList<Material> canReplace = new ArrayList<Material>();
+
+        //Non-solid blocks
+        for (Material type : Material.values()) if (!type.isSolid()) canReplace.add(type);
+
+        //Soft terrain blocks
+        canReplace.addAll(Arrays.asList(Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
+                Material.PODZOL, Material.MYCELIUM, Material.SAND, Material.RED_SAND, Material.CLAY, Material.MOSS_BLOCK));
+
+        treeMask = new BlockMask();
+        for (Material type : canReplace) treeMask.add(BukkitAdapter.asBlockType(type));
+
+    }
 
     @EventHandler
     public void onGrow(StructureGrowEvent event) {
@@ -34,8 +56,7 @@ public class TreeMechanics implements Listener {
             event.setCancelled(true);
 
             //Temporary test schematic
-            File file = new File(Islands.getInstance().getDataFolder(), "ae.schem");
-            pasteTree(file, origin.getLocation());
+            pasteTree(TreeType.TEST, origin.getLocation());
 
         }
 
@@ -88,27 +109,21 @@ public class TreeMechanics implements Listener {
     /**
      * Asynchronously pastes a tree schematic at a location.
      * Tree can only replace air and terrain blocks like dirt.
-     * @param file tree schematic
+     * @param type type of tree to paste
      * @param loc origin
      */
-    private void pasteTree(File file, Location loc) {
+    private void pasteTree(TreeType type, Location loc) {
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), new Runnable() {
 
             @Override
             public void run() {
 
-                Material[] canReplace = {Material.AIR, Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT,
-                        Material.PODZOL, Material.ROOTED_DIRT, Material.SAND};
-
-                BlockMask mask = new BlockMask();
-                for (Material type : canReplace) mask.add(BukkitAdapter.asBlockType(type));
-
                 EditSession session = WorldEdit.getInstance().newEditSession(FaweAPI.getWorld(loc.getWorld().getName()));
-                session.setMask(mask);
+                session.setMask(treeMask);
 
                 try {
-                    FaweAPI.load(file).paste(session, BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), false);
+                    FaweAPI.load(type.getFile()).paste(session, BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
