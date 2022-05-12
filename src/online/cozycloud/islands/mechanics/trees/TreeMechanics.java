@@ -6,6 +6,9 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,8 +39,6 @@ public class TreeMechanics implements Listener {
 
         if (origin != null) {
 
-            //Removes saplings
-            for (int x = 0; x < 2; ++x) for (int z = 0; z < 2; ++z) origin.getLocation().clone().add(x, 0, z).getBlock().setType(Material.AIR);
             event.setCancelled(true);
 
             //Temporary test schematic
@@ -105,6 +106,7 @@ public class TreeMechanics implements Listener {
             public void run() {
 
                 EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
+                removeSaplings(session, loc);
                 session.setMask(treeMask);
 
                 try {
@@ -119,6 +121,16 @@ public class TreeMechanics implements Listener {
 
         });
 
+    }
+
+    /**
+     * Removes the saplings to be turned into a custom tree. This is ran via FAWE so that the saplings are removed at the same time the tree is placed and not beforehand.
+     * @param session the session for the tree pasting
+     * @param loc the origin
+     */
+    private void removeSaplings(EditSession session, Location loc) {
+        Region saplingRegion = new CuboidRegion(BukkitAdapter.adapt(loc.getWorld()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), BlockVector3.at(loc.getX()+1, loc.getY(), loc.getZ()+1));
+        session.setBlocks(saplingRegion, BlockTypes.AIR);
     }
 
     /**
@@ -137,7 +149,7 @@ public class TreeMechanics implements Listener {
                 Material.PODZOL, Material.MYCELIUM, Material.SAND, Material.RED_SAND, Material.CLAY, Material.MOSS_BLOCK));
 
         BlockMask mask = new BlockMask();
-        for (Material type : canReplace) treeMask.add(BukkitAdapter.asBlockType(type));
+        for (Material type : canReplace) mask.add(BukkitAdapter.asBlockType(type));
         return mask;
 
     }
