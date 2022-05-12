@@ -104,7 +104,7 @@ public class TreeMechanics implements Listener {
             @Override
             public void run() {
 
-                EditSession session = WorldEdit.getInstance().newEditSession(FaweAPI.getWorld(loc.getWorld().getName()));
+                EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
                 session.setMask(treeMask);
 
                 try {
