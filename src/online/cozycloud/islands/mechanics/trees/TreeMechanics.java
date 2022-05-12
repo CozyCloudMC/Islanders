@@ -25,7 +25,7 @@ public class TreeMechanics implements Listener {
     private BlockMask treeMask;
 
     public TreeMechanics() {
-        treeMask = getTreeMask();
+        treeMask = createTreeMask();
     }
 
     @EventHandler
@@ -125,7 +125,7 @@ public class TreeMechanics implements Listener {
      * Creates a mask that only replaces non-solid blocks or soft terrain blocks.
      * @return the mask
      */
-    private BlockMask getTreeMask() {
+    private BlockMask createTreeMask() {
 
         ArrayList<Material> canReplace = new ArrayList<Material>();
 
