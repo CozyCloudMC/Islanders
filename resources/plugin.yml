@@ -2,7 +2,7 @@ name: Islands
 authors: [ChickenSaysBak, CozyCloud, mangoman69420, Vulcran7567]
 version: ${project.version}
 api-version: 1.18
-main: online.cozycloud.Islands.Islands
+main: online.cozycloud.islands.Islands
 commands:
   islands:
     aliases: [is]

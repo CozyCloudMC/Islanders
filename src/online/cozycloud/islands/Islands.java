@@ -1,7 +1,7 @@
-package online.cozycloud.Islands;
+package online.cozycloud.islands;
 
-import online.cozycloud.Islands.Commands.IslandsAdminCommand;
-import online.cozycloud.Islands.Commands.IslandsCommand;
+import online.cozycloud.islands.commands.IslandsAdminCommand;
+import online.cozycloud.islands.commands.IslandsCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Islands extends JavaPlugin {

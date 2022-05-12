@@ -1,11 +1,10 @@
-package online.cozycloud.Islands.Commands;
+package online.cozycloud.islands.commands;
 
-import online.cozycloud.Islands.Islands;
+import online.cozycloud.islands.Islands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
