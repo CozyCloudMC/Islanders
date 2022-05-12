@@ -28,7 +28,7 @@ import java.util.Random;
 public class TreeMechanics implements Listener {
 
     private BlockMask treeMask;
-    private HashMap<Material, ArrayList<CustomTree>> possibleTrees = new HashMap<>();
+    private HashMap<Material, ArrayList<CustomTree>> possibleTrees;
 
     public TreeMechanics() {
         treeMask = createTreeMask();
