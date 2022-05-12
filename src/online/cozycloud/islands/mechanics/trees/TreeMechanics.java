@@ -42,7 +42,7 @@ public class TreeMechanics implements Listener {
             event.setCancelled(true);
 
             //Temporary test schematic
-            pasteTree(TreeType.TEST, origin.getLocation());
+            pasteTree(CustomTree.TEST, origin.getLocation());
 
         }
 
@@ -98,7 +98,7 @@ public class TreeMechanics implements Listener {
      * @param type tree type to paste
      * @param loc origin
      */
-    private void pasteTree(TreeType type, Location loc) {
+    private void pasteTree(CustomTree type, Location loc) {
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), new Runnable() {
 

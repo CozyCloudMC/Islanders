@@ -4,12 +4,12 @@ import online.cozycloud.islands.Islands;
 
 import java.io.File;
 
-public enum TreeType {
+public enum CustomTree {
 
     TEST("Test");
 
     private String name;
-    private TreeType(String name) {this.name = name;}
+    CustomTree(String name) {this.name = name;}
 
     public File getFile() {
 
