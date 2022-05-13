@@ -6,6 +6,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -112,7 +113,7 @@ public class TreeMechanics implements Listener {
     }
 
     /**
-     * Asynchronously pastes a tree schematic at a location.
+     * Asynchronously pastes a tree schematic at a location with a random rotation.
      * Tree can only replace air and terrain blocks like dirt.
      * @param type tree type to paste
      * @param loc origin
@@ -127,8 +128,12 @@ public class TreeMechanics implements Listener {
                 EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
                 session.setMask(treeMask);
 
+                //Random rotation
+                double angle = new Random().nextInt(4) * 90;
+                int xOffset = angle == 270 || angle == 180 ? 1 : 0, zOffset = angle == 90 || angle == 180 ? 1 : 0;
+
                 try {
-                    FaweAPI.load(type.getFile()).paste(session, BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), false);
+                    FaweAPI.load(type.getFile()).paste(session, BlockVector3.at(loc.getX()+xOffset, loc.getY(), loc.getZ()+zOffset), false, new AffineTransform().rotateY(angle));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
