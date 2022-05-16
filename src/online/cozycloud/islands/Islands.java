@@ -15,6 +15,9 @@ public class Islands extends JavaPlugin {
     private static ConfigHandler configHandler;
     public static ConfigHandler getConfigHandler() {return configHandler;}
 
+    private static WorldHandler worldHandler;
+    public static WorldHandler getWorldHandler() {return worldHandler;}
+
     private static LocalIslandManager localIslandManager;
     public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
 
@@ -23,6 +26,7 @@ public class Islands extends JavaPlugin {
 
         instance = this;
         configHandler = new ConfigHandler();
+        worldHandler = new WorldHandler();
         localIslandManager = new LocalIslandManager();
 
         getCommand("islands").setExecutor(new IslandsCommand());
