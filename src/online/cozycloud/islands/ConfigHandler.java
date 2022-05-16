@@ -6,14 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-public class Config {
+public class ConfigHandler {
 
     private final File FILE;
 
     private String worldName;
     private String localTemplateName;
 
-    protected Config() {
+    protected ConfigHandler() {
         FILE = new File(Islands.getInstance().getDataFolder(), "config.yml");
         reload();
     }
