@@ -10,16 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Islands extends JavaPlugin {
 
     private static Islands instance;
-    public static Islands getInstance() {return instance;}
-
     private static ConfigHandler configHandler;
-    public static ConfigHandler getConfigHandler() {return configHandler;}
-
     private static WorldHandler worldHandler;
-    public static WorldHandler getWorldHandler() {return worldHandler;}
-
     private static LocalIslandManager localIslandManager;
-    public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
 
     @Override
     public void onEnable() {
@@ -35,5 +28,10 @@ public class Islands extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new TreeMechanics(), this);
 
     }
+
+    public static Islands getInstance() {return instance;}
+    public static ConfigHandler getConfigHandler() {return configHandler;}
+    public static WorldHandler getWorldHandler() {return worldHandler;}
+    public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
 
 }
