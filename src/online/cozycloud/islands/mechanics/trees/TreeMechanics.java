@@ -154,10 +154,10 @@ public class TreeMechanics implements Listener {
 
         ArrayList<Material> canReplace = new ArrayList<>();
 
-        //Non-solid blocks
+        // Non-solid blocks
         for (Material type : Material.values()) if (!type.isSolid()) canReplace.add(type);
 
-        //Soft terrain blocks
+        // Soft terrain blocks
         canReplace.addAll(Arrays.asList(Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
                 Material.PODZOL, Material.MYCELIUM, Material.SAND, Material.RED_SAND, Material.CLAY, Material.MOSS_BLOCK));
 

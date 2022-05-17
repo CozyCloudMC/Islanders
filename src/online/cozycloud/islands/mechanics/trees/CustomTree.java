@@ -7,7 +7,7 @@ import java.io.File;
 
 public enum CustomTree {
 
-    //TO BE EXPANDED
+    // TO BE EXPANDED
     TEST("Test"), TEST2("Test2");
 
     private String name;
