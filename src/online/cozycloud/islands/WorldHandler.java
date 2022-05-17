@@ -1,14 +1,22 @@
 package online.cozycloud.islands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 
+import java.io.File;
+
 public class WorldHandler {
 
+    private final File WORLD_FOLDER;
+
     protected WorldHandler() {
+        WORLD_FOLDER = Bukkit.getWorldContainer();
         loadMainWorlds();
     }
+
+    public File getWorldFolder() {return WORLD_FOLDER;}
 
     public void loadMainWorlds() {
 
