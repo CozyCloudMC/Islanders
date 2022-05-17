@@ -11,6 +11,7 @@ public class Islands extends JavaPlugin {
 
     private static Islands instance;
     private static ConfigHandler configHandler;
+    private static SqlHandler sqlHandler;
     private static WorldHandler worldHandler;
     private static LocalIslandManager localIslandManager;
 
@@ -19,6 +20,7 @@ public class Islands extends JavaPlugin {
 
         instance = this;
         configHandler = new ConfigHandler();
+        sqlHandler = new SqlHandler();
         worldHandler = new WorldHandler();
         localIslandManager = new LocalIslandManager();
 
@@ -31,6 +33,7 @@ public class Islands extends JavaPlugin {
 
     public static Islands getInstance() {return instance;}
     public static ConfigHandler getConfigHandler() {return configHandler;}
+    public static SqlHandler getSqlHandler() {return sqlHandler;}
     public static WorldHandler getWorldHandler() {return worldHandler;}
     public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
 
