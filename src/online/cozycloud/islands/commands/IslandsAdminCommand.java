@@ -10,7 +10,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class IslandsAdminCommand implements TabExecutor {
@@ -22,7 +21,7 @@ public class IslandsAdminCommand implements TabExecutor {
 
             if (sender.hasPermission("islands.admin")) {
 
-                String usage = ChatColor.RED + "Usage: /isa <reload|worlds|tp>";
+                String usage = ChatColor.RED + "Usage: /isa <reload|worlds|tp|test>";
 
                 if (args.length >= 1) {
 
@@ -84,7 +83,7 @@ public class IslandsAdminCommand implements TabExecutor {
             switch (args.length) {
 
                 case 1:
-                    result.addAll(Arrays.asList("reload", "worlds", "tp", "test"));
+                    result.addAll(List.of("reload", "worlds", "tp", "test"));
                     break;
 
                 case 2:
