@@ -32,6 +32,10 @@ public class ConfigHandler {
     public String getWorldName() {return worldName != null ? worldName : "islands";}
     public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "local_template";}
 
+    /**
+     * Sets variables to values specified by the config if they exist.
+     * This must be run for any changes in the config to take effect.
+     */
     public void reload() {
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(FILE);
@@ -61,6 +65,11 @@ public class ConfigHandler {
 
     }
 
+    /**
+     * Creates the config with default values.
+     * This will create the plugin directory if it does not exist.
+     * @param config the config to save to
+     */
     private void initialize(YamlConfiguration config) {
 
         config.set("sql.address", getSqlAddress());
