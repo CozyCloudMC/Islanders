@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Manages existing local islands and contains other relevant methods.
+ */
 public class LocalIslandManager {
 
     private static LocalIslandSetupManager localIslandSetupManager;

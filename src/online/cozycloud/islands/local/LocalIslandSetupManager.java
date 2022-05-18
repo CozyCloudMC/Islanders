@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Contains methods pertaining to the creation and deletion of local islands.
+ */
 public class LocalIslandSetupManager {
 
     /**
