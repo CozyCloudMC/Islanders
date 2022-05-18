@@ -1,6 +1,8 @@
 package online.cozycloud.islands.commands;
 
 import online.cozycloud.islands.Islands;
+import online.cozycloud.islands.local.LocalIsland;
+import online.cozycloud.islands.local.LocalIslandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -59,7 +61,18 @@ public class IslandsAdminCommand implements TabExecutor {
 
                     else if (args[0].equalsIgnoreCase("test") && sender instanceof Player player) {
 
-                        Islands.getLocalIslandManager().createIsland(List.of(player));
+                        if (args.length >= 2) {
+
+                            if (args[1].equalsIgnoreCase("create")) LocalIslandManager.getLocalIslandSetupManager().createIsland(List.of(player));
+
+                            else if (args[1].equalsIgnoreCase("delete")) {
+
+                                if (args.length >= 3) LocalIslandManager.getLocalIslandSetupManager().deleteIsland(args[2], sender);
+                                else sender.sendMessage(ChatColor.RED + "Usage: /isa test delete <name>");
+
+                            } else sender.sendMessage(ChatColor.RED + "Usage: /isa test <create|delete>");
+
+                        } else sender.sendMessage(ChatColor.RED + "Usage: /isa test <create|delete>");
 
                     } else sender.sendMessage(usage);
 
@@ -90,8 +103,15 @@ public class IslandsAdminCommand implements TabExecutor {
                     if (args[0].equalsIgnoreCase("tp")) for (World w : Bukkit.getWorlds()) {
                         String name = w.getName();
                         if (name.toLowerCase().startsWith(args[1].toLowerCase())) result.add(name); // Hides irrelevant results
-                    }
+                    } else if (args[0].equalsIgnoreCase("test")) result.addAll(List.of("create", "delete"));
                     break;
+
+                case 3:
+                    if (args[0].equalsIgnoreCase("test") && args[1].equalsIgnoreCase("delete"))
+                        for (LocalIsland island : Islands.getLocalIslandManager().getIslands()) {
+                        String name = island.getName();
+                        if (name.toLowerCase().startsWith(args[2].toLowerCase())) result.add(name);
+                    }
 
             }
 
