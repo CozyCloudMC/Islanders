@@ -6,6 +6,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Handles processes involving the SQL database.
+ * All methods should be run asynchronously!
+ */
 public class SqlHandler {
 
     private Connection connection;
