@@ -4,24 +4,40 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class WorldHandler {
 
     private final File WORLD_FOLDER;
+    private final World MAIN_WORLD;
 
     protected WorldHandler() {
         WORLD_FOLDER = Bukkit.getWorldContainer();
+        MAIN_WORLD = Bukkit.getWorld(Islands.getConfigHandler().getWorldName());
         loadMainWorlds();
     }
 
     public File getWorldFolder() {return WORLD_FOLDER;}
+    public World getMainWorld() {return MAIN_WORLD;}
 
     public void loadMainWorlds() {
 
         // Local template
         getLocalWorldCreator(Islands.getConfigHandler().getLocalTemplateName()).createWorld();
+
+    }
+
+    public void safelyUnloadWorld(String name) {safelyUnloadWorld(Bukkit.getWorld(name));}
+
+    public void safelyUnloadWorld(World world) {
+
+        if (world == null) return;
+
+        for (Player p : new ArrayList<>(world.getPlayers())) p.teleport(Islands.getWorldHandler().getMainWorld().getSpawnLocation());
+        Bukkit.unloadWorld(world, false);
 
     }
 
