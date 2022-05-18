@@ -4,7 +4,6 @@ import online.cozycloud.islands.Islands;
 import online.cozycloud.islands.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -23,15 +22,11 @@ public class LocalIsland {
         this(name, null);
     }
 
-    protected LocalIsland(String name, @Nullable List<Player> players) {
+    protected LocalIsland(String name, @Nullable List<UUID> members) {
 
         NAME = name;
         WORLD_FILE = new File(Islands.getWorldHandler().getWorldFolder(), NAME);
-
-        if (players != null) {
-            members = new ArrayList<>();
-            for (Player p : players) members.add(p.getUniqueId());
-        }
+        if (members != null) this.members = new ArrayList<>(members);
 
         loadData();
 
