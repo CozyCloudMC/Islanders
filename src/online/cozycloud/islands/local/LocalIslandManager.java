@@ -4,6 +4,8 @@ import online.cozycloud.islands.Islands;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +47,35 @@ public class LocalIslandManager {
         localIslands.remove(name);
     }
 
+    public ArrayList<LocalIsland> getIslands() {
+        return new ArrayList<>(localIslands.values());
+    }
+
     @Nullable
     public LocalIsland getIsland(String name) {
         return localIslands.getOrDefault(name, null);
     }
 
-    public ArrayList<LocalIsland> getIslands() {
-        return new ArrayList<>(localIslands.values());
+    /**
+     * Gets a list of all islands that have a particular member.
+     * @param member the UUID of the member to query
+     * @return a list of islands containing the member
+     * @throws SQLException thrown if a connection could not be made to the database
+     */
+    public ArrayList<LocalIsland> getIslandsWithMember(UUID member) throws SQLException {
+
+        ArrayList<LocalIsland> islands = new ArrayList<>();
+
+        String selectCmd = "SELECT name FROM local_islands WHERE members LIKE '%" + member.toString() + "%';";
+        ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
+
+        while (result.next()) {
+            String name = result.getString("name");
+            if (localIslands.containsKey(name)) islands.add(localIslands.get(name));
+        }
+
+        return islands;
+
     }
 
     /**
