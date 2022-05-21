@@ -1,9 +1,9 @@
 package online.cozycloud.islands.local;
 
 import online.cozycloud.islands.Islands;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,21 +21,34 @@ public class LocalIslandManager {
     private HashMap<String, LocalIsland> localIslands = new HashMap<>();
 
     public LocalIslandManager() {
+
         localIslandSetupManager = new LocalIslandSetupManager();
-        reload();
+
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+
+            try {
+                reload();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        });
+
     }
 
     public static LocalIslandSetupManager getLocalIslandSetupManager() {return localIslandSetupManager;}
 
-    public void reload() {
+    /**
+     * Reloads all local islands from the database.
+     * @throws SQLException thrown if a connection could not be made to the database
+     */
+    public void reload() throws SQLException {
 
         localIslands.clear();
-        File[] files = Islands.getWorldHandler().getWorldFolder().listFiles();
 
-        if (files != null) for (File f : files) {
-            String name = f.getName();
-            if (name.startsWith("0")) loadIsland(name);
-        }
+        String selectCmd = "SELECT name FROM local_islands;";
+        ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
+        while (result.next()) loadIsland(result.getString("name"));
 
     }
 
