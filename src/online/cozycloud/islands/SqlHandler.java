@@ -44,7 +44,7 @@ public class SqlHandler {
      */
     private void openConnection() throws SQLException {
 
-        if (connection == null || connection.isClosed()) {
+        if (connection == null || !connection.isValid(3)) {
 
             ConfigHandler config = Islands.getConfigHandler();
 
