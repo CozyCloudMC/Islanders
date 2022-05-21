@@ -30,14 +30,14 @@ public class WorldHandler {
 
     }
 
-    public void safelyUnloadWorld(String name) {safelyUnloadWorld(Bukkit.getWorld(name));}
+    public void safelyUnloadWorld(String name, boolean save) {safelyUnloadWorld(Bukkit.getWorld(name), save);}
 
-    public void safelyUnloadWorld(World world) {
+    public void safelyUnloadWorld(World world, boolean save) {
 
         if (world == null) return;
 
         for (Player p : new ArrayList<>(world.getPlayers())) p.teleport(Islands.getWorldHandler().getMainWorld().getSpawnLocation());
-        Bukkit.unloadWorld(world, false);
+        Bukkit.unloadWorld(world, save);
 
     }
 

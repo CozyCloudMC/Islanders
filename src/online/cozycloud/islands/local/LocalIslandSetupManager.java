@@ -156,7 +156,7 @@ public class LocalIslandSetupManager {
         if (sender != null) sender.sendMessage(ChatColor.RED + "Deleting island...");
 
         Islands.getLocalIslandManager().unloadIsland(name);
-        Islands.getWorldHandler().safelyUnloadWorld(name); // Must be synchronous
+        Islands.getWorldHandler().safelyUnloadWorld(name, false); // Must be synchronous
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
