@@ -31,23 +31,23 @@ public class LocalIslandSetupManager {
         // SQL operations and file duplication are run asynchronously to avoid lagging the main thread
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
-            String name = createWorldName();
+            String id = createIslandID();
             ArrayList<UUID> members = new ArrayList<>();
             for (Player p : players) members.add(p.getUniqueId());
 
             try {
-                createData(name, members);
+                createData(id, members);
             } catch (SQLException e) {
                 e.printStackTrace();
-                cancelIslandCreation(name, players);
+                cancelIslandCreation(id, players);
                 return;
             }
 
             try {
-                duplicateTemplate(name);
+                duplicateTemplate(id);
             } catch (IOException e) {
                 e.printStackTrace();
-                cancelIslandCreation(name, players);
+                cancelIslandCreation(id, players);
                 return;
             }
 
@@ -55,14 +55,14 @@ public class LocalIslandSetupManager {
             // Must occur *after* the folder exists, or it will make its own empty world
             Bukkit.getScheduler().runTask(Islands.getInstance(), () -> {
 
-                World world = setUpWorld(name);
+                World world = setUpWorld(id);
 
                 if (world == null) {
-                    cancelIslandCreation(name, players);
+                    cancelIslandCreation(id, players);
                     return;
                 }
 
-                Islands.getLocalIslandManager().loadIsland(name, members);
+                Islands.getLocalIslandManager().loadIsland(id, members);
 
                 for (Player p : players) {
                     p.teleport(world.getSpawnLocation());
@@ -78,34 +78,34 @@ public class LocalIslandSetupManager {
     /**
      * Deletes database data, deletes the world folder of the specified island, and sends the specified players an error message.
      * This is to be used when part of the island creation fails; this prevents incomplete island setups.
-     * @param name the island name
+     * @param id the island ID
      * @param players the players attempting to start an island
      */
-    private void cancelIslandCreation(String name, List<Player> players) {
+    private void cancelIslandCreation(String id, List<Player> players) {
         for (Player p : players) p.sendMessage(ChatColor.RED + "An error occurred. Contact an admin for help!");
-        deleteIsland(name, null);
+        deleteIsland(id, null);
     }
 
     /**
-     * Creates a random 13 character world name starting with 0.
+     * Creates a random 13 character ID starting with 0.
      * Example: 0b6a283eb3a79
-     * @return random name
+     * @return random ID
      */
-    private String createWorldName() {
+    private String createIslandID() {
         String[] parts = UUID.randomUUID().toString().split("-");
         return "0" + parts[parts.length-1];
     }
 
     /**
      * Duplicates local template world's region files without the other data files.
-     * @param name the island name
+     * @param id the island ID
      * @throws IOException thrown if the folder could not be duplicated
      */
-    private void duplicateTemplate(String name) throws IOException {
+    private void duplicateTemplate(String id) throws IOException {
 
         File worldFolder = Islands.getWorldHandler().getWorldFolder();
         File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName(), "region");
-        File newRegion = new File(worldFolder + "/" + name, "region");
+        File newRegion = new File(worldFolder + "/" + id, "region");
 
         FileUtils.copyDirectory(templateRegion, newRegion, false);
 
@@ -113,24 +113,24 @@ public class LocalIslandSetupManager {
 
     /**
      * Inserts local island data into the database.
-     * @param name the island name
+     * @param id the island ID
      * @param members the UUIDs of the island's members
      * @throws SQLException thrown if a connection could not be made to the database
      */
-    private void createData(String name, List<UUID> members) throws SQLException {
-        String insertCmd = "INSERT INTO local_islands(name, members) VALUES ('" + name + "', '" + LocalIslandManager.membersToString(members) + "');";
+    private void createData(String id, List<UUID> members) throws SQLException {
+        String insertCmd = "INSERT INTO local_islands(id, members) VALUES ('" + id + "', '" + LocalIslandManager.membersToString(members) + "');";
         Islands.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
     }
 
     /**
      * Loads the specified local world and establishes basic properties like game rules.
-     * @param name the island name
+     * @param id the island ID
      * @return the newly loaded world or null if setup failed
      */
     @Nullable
-    private World setUpWorld(String name) {
+    private World setUpWorld(String id) {
 
-        World world = WorldHandler.getLocalWorldCreator(name).createWorld();
+        World world = WorldHandler.getLocalWorldCreator(id).createWorld();
         if (world == null) return null;
 
         world.setSpawnLocation(new Location(world, 0, 64, 0)); // Temporary location
@@ -148,27 +148,27 @@ public class LocalIslandSetupManager {
 
     /**
      * Deletes local island's SQL data and world folder. Be careful!
-     * @param name the island name
+     * @param id the island ID
      * @param sender sender that initiated the island deletion or null if not applicable
      */
-    public void deleteIsland(String name, @Nullable CommandSender sender) {
+    public void deleteIsland(String id, @Nullable CommandSender sender) {
 
         if (sender != null) sender.sendMessage(ChatColor.RED + "Deleting island...");
 
-        Islands.getLocalIslandManager().unloadIsland(name);
-        Islands.getWorldHandler().safelyUnloadWorld(name, false); // Must be synchronous
+        Islands.getLocalIslandManager().unloadIsland(id);
+        Islands.getWorldHandler().safelyUnloadWorld(id, false); // Must be synchronous
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
             try {
-                File file = new File(Islands.getWorldHandler().getWorldFolder(), name);
+                File file = new File(Islands.getWorldHandler().getWorldFolder(), id);
                 if (file.exists()) FileUtils.deleteDirectory(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             try {
-                deleteData(name);
+                deleteData(id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -181,11 +181,11 @@ public class LocalIslandSetupManager {
 
     /**
      * Deletes local island data from the database.
-     * @param name the island name
+     * @param id the island ID
      * @throws SQLException thrown if a connection could not be made to the database
      */
-    private void deleteData(String name) throws SQLException {
-        String deleteCmd = "DELETE FROM local_islands WHERE name = '" + name + "';";
+    private void deleteData(String id) throws SQLException {
+        String deleteCmd = "DELETE FROM local_islands WHERE id = '" + id + "';";
         Islands.getSqlHandler().getConnection().prepareStatement(deleteCmd).executeUpdate();
     }
 

@@ -47,19 +47,19 @@ public class LocalIslandManager {
 
         localIslands.clear();
 
-        String selectCmd = "SELECT name FROM local_islands;";
+        String selectCmd = "SELECT id FROM local_islands;";
         ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
-        while (result.next()) loadIsland(result.getString("name"));
+        while (result.next()) loadIsland(result.getString("id"));
 
     }
 
-    public void loadIsland(String name) {loadIsland(name, null);}
-    public void loadIsland(String name, List<UUID> cachedMembers) {if (!localIslands.containsKey(name)) localIslands.put(name, new LocalIsland(name, cachedMembers));}
-    public void unloadIsland(String name) {localIslands.remove(name);}
+    public void loadIsland(String id) {loadIsland(id, null);}
+    public void loadIsland(String id, List<UUID> cachedMembers) {if (!localIslands.containsKey(id)) localIslands.put(id, new LocalIsland(id, cachedMembers));}
+    public void unloadIsland(String id) {localIslands.remove(id);}
 
     @Nullable
-    public LocalIsland getIsland(String name) {
-        return localIslands.getOrDefault(name, null);
+    public LocalIsland getIsland(String id) {
+        return localIslands.getOrDefault(id, null);
     }
     public ArrayList<LocalIsland> getIslands() {
         return new ArrayList<>(localIslands.values());
@@ -75,12 +75,12 @@ public class LocalIslandManager {
 
         ArrayList<LocalIsland> islands = new ArrayList<>();
 
-        String selectCmd = "SELECT name FROM local_islands WHERE members LIKE '%" + member + "%';";
+        String selectCmd = "SELECT id FROM local_islands WHERE members LIKE '%" + member + "%';";
         ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
 
         while (result.next()) {
-            String name = result.getString("name");
-            if (localIslands.containsKey(name)) islands.add(localIslands.get(name));
+            String id = result.getString("id");
+            if (localIslands.containsKey(id)) islands.add(localIslands.get(id));
         }
 
         return islands;

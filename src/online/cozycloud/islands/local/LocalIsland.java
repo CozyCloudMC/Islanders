@@ -16,15 +16,15 @@ import java.util.UUID;
 
 public class LocalIsland {
 
-    private final String NAME;
+    private final String ID;
     private final File WORLD_FILE;
 
     private ArrayList<UUID> members;
 
-    protected LocalIsland(String name, @Nullable List<UUID> members) {
+    protected LocalIsland(String id, @Nullable List<UUID> members) {
 
-        NAME = name;
-        WORLD_FILE = new File(Islands.getWorldHandler().getWorldFolder(), NAME);
+        ID = id;
+        WORLD_FILE = new File(Islands.getWorldHandler().getWorldFolder(), ID);
         if (members != null) this.members = new ArrayList<>(members);
 
         loadData();
@@ -39,7 +39,7 @@ public class LocalIsland {
         if (members != null) Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
             try {
-                String selectCmd = "SELECT members FROM local_islands WHERE name = '" + NAME + "';";
+                String selectCmd = "SELECT members FROM local_islands WHERE id = '" + ID + "';";
                 ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
                 while (result.next()) members = new ArrayList<>(LocalIslandManager.membersToList(result.getString("members")));
             } catch (SQLException e) {
@@ -57,12 +57,12 @@ public class LocalIsland {
     @Nullable
     public World loadWorld() {
         if (!WORLD_FILE.exists()) return null;
-        return WorldHandler.getLocalWorldCreator(NAME).createWorld();
+        return WorldHandler.getLocalWorldCreator(ID).createWorld();
     }
 
-    public void unloadWorld() {Bukkit.unloadWorld(NAME, true);}
+    public void unloadWorld() {Bukkit.unloadWorld(ID, true);}
 
-    public String getName() {return NAME;}
+    public String getName() {return ID;}
     public ArrayList<UUID> getMembers() {return new ArrayList<>(members);}
 
     public ArrayList<Player> getOnlineMembers() {
@@ -82,7 +82,7 @@ public class LocalIsland {
      * @return the island's world or null if it is not loaded
      */
     @Nullable
-    public World getWorld() {return Bukkit.getWorld(NAME);}
+    public World getWorld() {return Bukkit.getWorld(ID);}
 
     /**
      * Check if the island's world has no players and no island members are online
