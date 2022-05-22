@@ -3,6 +3,7 @@ package online.cozycloud.islands.local;
 import online.cozycloud.islands.Islands;
 import online.cozycloud.islands.WorldHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -36,9 +37,9 @@ public class LocalIsland {
      */
     private void loadData() {
 
-        if (members != null) Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
-            try {
+            if (members == null) try {
                 String selectCmd = "SELECT members FROM local_islands WHERE id = '" + ID + "';";
                 ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
                 while (result.next()) members = new ArrayList<>(LocalIslandManager.membersToList(result.getString("members")));
@@ -46,7 +47,55 @@ public class LocalIsland {
                 e.printStackTrace();
             }
 
+            for (UUID uuid : members) Islands.getLocalIslandManager().assignIslandToMember(uuid, ID);
+
         });
+
+    }
+
+    /**
+     * Teleport a player to the island's spawn.
+     * @param player the player to teleport
+     */
+    public void spawn(Player player) {
+
+        World world = getWorld();
+        if (world == null) world = loadWorld();
+
+        if (world != null) player.teleport(world.getSpawnLocation());
+        else player.sendMessage(ChatColor.RED + "An error occurred. Contact an admin for help!");
+
+    }
+
+    /**
+     * Removes a member from the island and deletes the island if there are no remaining members.
+     * @param member the member to remove
+     */
+    public void abandon(UUID member) {
+
+        if (!members.contains(member)) return;
+        members.remove(member);
+
+        if (members.isEmpty()) LocalIslandManager.getLocalIslandSetupManager().deleteIsland(ID, null);
+
+        else {
+
+            Player player = Bukkit.getPlayer(member);
+            if (player != null) player.teleport(Islands.getWorldHandler().getMainWorld().getSpawnLocation());
+            Islands.getLocalIslandManager().unassignIslandToMember(member, ID);
+
+            Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+
+                try {
+                    String updateCmd = "UPDATE local_islands SET members = '" + LocalIslandManager.membersToString(members) + "' WHERE id = '" + ID + "';";
+                    Islands.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            });
+
+        }
 
     }
 

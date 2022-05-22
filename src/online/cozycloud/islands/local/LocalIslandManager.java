@@ -19,6 +19,7 @@ public class LocalIslandManager {
     private static LocalIslandSetupManager localIslandSetupManager;
 
     private HashMap<String, LocalIsland> localIslands = new HashMap<>();
+    private HashMap<UUID, ArrayList<String>> membersIslands = new HashMap<>();
 
     public LocalIslandManager() {
 
@@ -55,7 +56,34 @@ public class LocalIslandManager {
 
     public void loadIsland(String id) {loadIsland(id, null);}
     public void loadIsland(String id, List<UUID> cachedMembers) {if (!localIslands.containsKey(id)) localIslands.put(id, new LocalIsland(id, cachedMembers));}
-    public void unloadIsland(String id) {localIslands.remove(id);}
+
+    public void unloadIsland(String id) {
+
+        LocalIsland island = getIsland(id);
+        if (island != null) for (UUID uuid : island.getMembers()) unassignIslandToMember(uuid, id);
+
+        localIslands.remove(id);
+
+    }
+
+    protected void assignIslandToMember(UUID uuid, String id) {
+
+        ArrayList<String> islands = membersIslands.getOrDefault(uuid, new ArrayList<>());
+        if (!islands.contains(id)) islands.add(id);
+
+        membersIslands.put(uuid, islands);
+
+    }
+
+    protected void unassignIslandToMember(UUID uuid, String id) {
+
+        ArrayList<String> islands = membersIslands.getOrDefault(uuid, new ArrayList<>());
+        islands.remove(id);
+
+        if (!islands.isEmpty()) membersIslands.put(uuid, islands);
+        else membersIslands.remove(uuid);
+
+    }
 
     @Nullable
     public LocalIsland getIsland(String id) {
@@ -67,24 +95,27 @@ public class LocalIslandManager {
 
     /**
      * Gets a list of all islands that have a particular member.
-     * @param member the UUID of the member to query
+     * @param member the UUID of the member
      * @return a list of islands containing the member
-     * @throws SQLException thrown if a connection could not be made to the database
      */
-    public ArrayList<LocalIsland> getIslandsWithMember(UUID member) throws SQLException {
+    public ArrayList<LocalIsland> getIslandsWithMember(UUID member) {
 
-        ArrayList<LocalIsland> islands = new ArrayList<>();
+        ArrayList<LocalIsland> result = new ArrayList<>();
+        for (String id : membersIslands.getOrDefault(member, new ArrayList<>())) if (localIslands.containsKey(id)) result.add(localIslands.get(id));
 
-        String selectCmd = "SELECT id FROM local_islands WHERE members LIKE '%" + member + "%';";
-        ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
+        return result;
 
-        while (result.next()) {
-            String id = result.getString("id");
-            if (localIslands.containsKey(id)) islands.add(localIslands.get(id));
-        }
+    }
 
-        return islands;
-
+    /**
+     * Gets the main island of a member.
+     * @param member the UUID of the member
+     * @return the user's main island
+     */
+    @Nullable
+    public LocalIsland getMainIsland(UUID member) {
+        ArrayList<LocalIsland> islands = getIslandsWithMember(member);
+        return islands.isEmpty() ? null : islands.get(0);
     }
 
     /**
