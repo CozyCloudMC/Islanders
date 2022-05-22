@@ -22,11 +22,11 @@ public class PlayerDataHandler implements Listener {
         String name = event.getName();
 
         // Updates players' username if it has changed
-        String insertCmd = "INSERT INTO player_data(uuid, name) VALUES ('" + uuid.toString() + "', '" + name + "') " +
+        String insertCmd = "INSERT INTO player_data(uuid, name) VALUES ('" + uuid + "', '" + name + "') " +
                 "ON DUPLICATE KEY UPDATE name = '" + name + "';";
 
         // Gets last world
-        String selectCmd = "SELECT world FROM player_data WHERE uuid = '" + uuid.toString() + "';";
+        String selectCmd = "SELECT world FROM player_data WHERE uuid = '" + uuid + "';";
 
         try {
 
@@ -54,7 +54,7 @@ public class PlayerDataHandler implements Listener {
         String world = player.getWorld().getName();
 
         // Updates the player's last world
-        String insertCmd = "INSERT INTO player_data(uuid, name, world) VALUES ('" + player.getUniqueId().toString() + "', '" + player.getName() + "', '" + world + "') " +
+        String insertCmd = "INSERT INTO player_data(uuid, name, world) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', '" + world + "') " +
                 "ON DUPLICATE KEY UPDATE world = '" + world + "';";
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {

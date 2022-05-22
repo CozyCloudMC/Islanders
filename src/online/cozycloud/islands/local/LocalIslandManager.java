@@ -79,7 +79,7 @@ public class LocalIslandManager {
 
         ArrayList<LocalIsland> islands = new ArrayList<>();
 
-        String selectCmd = "SELECT name FROM local_islands WHERE members LIKE '%" + member.toString() + "%';";
+        String selectCmd = "SELECT name FROM local_islands WHERE members LIKE '%" + member + "%';";
         ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
 
         while (result.next()) {
@@ -100,7 +100,7 @@ public class LocalIslandManager {
     public static String membersToString(List<UUID> members) {
 
         String result = "";
-        for (UUID uuid : members) result += uuid.toString() + ",";
+        for (UUID uuid : members) result += uuid + ",";
         if (result.endsWith(",")) result = result.substring(0, result.length()-1);
 
         return result;
