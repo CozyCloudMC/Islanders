@@ -28,6 +28,7 @@ public class Islands extends JavaPlugin {
         getCommand("islandsadmin").setExecutor(new IslandsAdminCommand());
 
         Bukkit.getPluginManager().registerEvents(new TreeMechanics(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDataHandler(), this);
 
     }
 
