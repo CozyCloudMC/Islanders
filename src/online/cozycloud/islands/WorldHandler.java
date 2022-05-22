@@ -1,5 +1,6 @@
 package online.cozycloud.islands;
 
+import online.cozycloud.islands.local.LocalIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -27,6 +28,15 @@ public class WorldHandler {
 
         // Local template
         getLocalWorldCreator(Islands.getConfigHandler().getLocalTemplateName()).createWorld();
+
+    }
+
+    public void unloadInactiveWorlds() {
+
+        for (World w : Bukkit.getWorlds()) {
+            LocalIsland island = Islands.getLocalIslandManager().getIsland(w.getName());
+            if (island != null && island.hasNoRelevantPlayers()) safelyUnloadWorld(w, true);
+        }
 
     }
 
