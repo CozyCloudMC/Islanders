@@ -23,6 +23,7 @@ public class LocalIslandManager {
     public LocalIslandManager() {
 
         localIslandSetupManager = new LocalIslandSetupManager();
+        Bukkit.getPluginManager().registerEvents(new LocalIslandEvents(), Islands.getInstance());
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
@@ -52,21 +53,16 @@ public class LocalIslandManager {
 
     }
 
-    public void loadIsland(String name) {
-        if (!localIslands.containsKey(name)) localIslands.put(name, new LocalIsland(name));
-    }
-
-    public void unloadIsland(String name) {
-        localIslands.remove(name);
-    }
-
-    public ArrayList<LocalIsland> getIslands() {
-        return new ArrayList<>(localIslands.values());
-    }
+    public void loadIsland(String name) {loadIsland(name, null);}
+    public void loadIsland(String name, List<UUID> cachedMembers) {if (!localIslands.containsKey(name)) localIslands.put(name, new LocalIsland(name, cachedMembers));}
+    public void unloadIsland(String name) {localIslands.remove(name);}
 
     @Nullable
     public LocalIsland getIsland(String name) {
         return localIslands.getOrDefault(name, null);
+    }
+    public ArrayList<LocalIsland> getIslands() {
+        return new ArrayList<>(localIslands.values());
     }
 
     /**

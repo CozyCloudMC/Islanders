@@ -62,7 +62,7 @@ public class LocalIslandSetupManager {
                     return;
                 }
 
-                Islands.getLocalIslandManager().loadIsland(name);
+                Islands.getLocalIslandManager().loadIsland(name, members);
 
                 for (Player p : players) {
                     p.teleport(world.getSpawnLocation());
