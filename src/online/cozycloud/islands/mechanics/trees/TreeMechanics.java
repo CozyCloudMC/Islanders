@@ -103,7 +103,7 @@ public class TreeMechanics implements Listener {
     }
 
     /**
-     * Gets a random custom tree type.
+     * Gets a random custom tree type based on a sapling.
      * @param sapling the type of sapling being grown
      * @return a random tree type
      */
@@ -120,27 +120,22 @@ public class TreeMechanics implements Listener {
      */
     private void pasteTree(CustomTree type, Location loc) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), new Runnable() {
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
-            @Override
-            public void run() {
+            EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
+            session.setMask(treeMask);
 
-                EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
-                session.setMask(treeMask);
+            //Random rotation
+            double angle = new Random().nextInt(4) * 90;
+            int xOffset = angle == 270 || angle == 180 ? 1 : 0, zOffset = angle == 90 || angle == 180 ? 1 : 0;
 
-                //Random rotation
-                double angle = new Random().nextInt(4) * 90;
-                int xOffset = angle == 270 || angle == 180 ? 1 : 0, zOffset = angle == 90 || angle == 180 ? 1 : 0;
-
-                try {
-                    FaweAPI.load(type.getFile()).paste(session, BlockVector3.at(loc.getX()+xOffset, loc.getY(), loc.getZ()+zOffset), false, new AffineTransform().rotateY(angle));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                session.flushQueue();
-
+            try {
+                FaweAPI.load(type.getFile()).paste(session, BlockVector3.at(loc.getX()+xOffset, loc.getY(), loc.getZ()+zOffset), false, new AffineTransform().rotateY(angle));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+            session.flushQueue();
 
         });
 
