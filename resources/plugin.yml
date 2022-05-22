@@ -6,7 +6,7 @@ depend: [FastAsyncWorldEdit]
 main: online.cozycloud.islands.Islands
 commands:
   islands:
-    aliases: [is]
+    aliases: [is, island]
   islandsadmin:
     aliases: [isa]
     permission: islands.admin
