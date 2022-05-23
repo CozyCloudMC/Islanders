@@ -30,7 +30,7 @@ public class ConfigHandler {
     public String getSqlUsername() {return sqlUsername != null ? sqlUsername : "root";}
     public String getSqlPassword() {return sqlPassword != null ? sqlPassword : "";}
     public String getWorldName() {return worldName != null ? worldName : "islands";}
-    public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "local_template";}
+    public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "template";}
 
     /**
      * Sets variables to values specified by the config if they exist.
