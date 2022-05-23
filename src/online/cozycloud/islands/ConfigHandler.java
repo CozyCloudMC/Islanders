@@ -24,7 +24,7 @@ public class ConfigHandler {
 
     public File getFile() {return FILE;}
 
-    //The following getters refer to config values and return defaults if no value exists.
+    // The following getters refer to config values and return defaults if no value exists.
     public String getSqlAddress() {return sqlAddress != null ? sqlAddress : "127.0.0.1:3306";}
     public String getSqlDatabase() {return sqlDatabase != null ? sqlDatabase : "islands";}
     public String getSqlUsername() {return sqlUsername != null ? sqlUsername : "root";}
