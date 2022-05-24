@@ -21,7 +21,7 @@ import java.util.UUID;
 public class LocalIslandSetupManager {
 
     /**
-     * Creates a local island for the specified player(s).
+     * Creates a local island for the specified player(s). Only creates overworld.
      * @param players the players starting the island
      */
     public void createIsland(List<Player> players) {
@@ -44,7 +44,7 @@ public class LocalIslandSetupManager {
             }
 
             try {
-                duplicateTemplates(id);
+                duplicateTemplate(id, World.Environment.NORMAL);
             } catch (IOException e) {
                 e.printStackTrace();
                 cancelIslandCreation(id, players);
@@ -55,16 +55,11 @@ public class LocalIslandSetupManager {
             // Must occur *after* the world folders exist, or it will make its own empty worlds
             Bukkit.getScheduler().runTask(Islands.getInstance(), () -> {
 
-                for (World.Environment env : WorldHandler.getValidEnvironments()) {
+                World world = setUpWorld(id, World.Environment.NORMAL);
 
-                    String worldName = id + WorldHandler.getWorldSuffix(env);
-                    World world = setUpWorld(worldName, env);
-
-                    if (world == null) {
-                        cancelIslandCreation(id, players);
-                        return;
-                    }
-
+                if (world == null) {
+                    cancelIslandCreation(id, players);
+                    return;
                 }
 
                 LocalIsland island = Islands.getLocalIslandManager().loadIsland(id, members);
@@ -81,7 +76,7 @@ public class LocalIslandSetupManager {
     }
 
     /**
-     * Deletes database data, deletes the world folder of the specified island, and sends the specified players an error message.
+     * Deletes database data, deletes the world folders of the specified island, and sends the specified players an error message.
      * This is to be used when part of the island creation fails; this prevents incomplete island setups.
      * @param id the island ID
      * @param players the players attempting to start an island
@@ -102,30 +97,26 @@ public class LocalIslandSetupManager {
     }
 
     /**
-     * Duplicates local template worlds' region files without the other data files.
+     * Duplicates a local template world's region files without the other data files.
      * @param id the island ID
+     * @param environment the environment of the world to duplicate
      * @throws IOException thrown if the folders could not be duplicated
      */
-    private void duplicateTemplates(String id) throws IOException {
+    private void duplicateTemplate(String id, World.Environment environment) throws IOException {
 
         File worldFolder = Islands.getWorldHandler().getWorldFolder();
+        String suffix = WorldHandler.getWorldSuffix(environment);
 
-        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+        String dimFolder = switch (environment) {
+            default -> "";
+            case NETHER -> "/DIM-1";
+            case THE_END -> "/DIM1";
+        };
 
-            String suffix = WorldHandler.getWorldSuffix(env);
+        File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName() + suffix + dimFolder, "region");
+        File newRegion = new File(worldFolder + "/" + id + suffix + dimFolder, "region");
 
-            String dimFolder = switch (env) {
-                default -> "";
-                case NETHER -> "/DIM-1";
-                case THE_END -> "/DIM1";
-            };
-
-            File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName() + suffix + dimFolder, "region");
-            File newRegion = new File(worldFolder + "/" + id + suffix, "region");
-
-            FileUtils.copyDirectory(templateRegion, newRegion, false);
-
-        }
+        FileUtils.copyDirectory(templateRegion, newRegion, false);
 
     }
 
@@ -142,13 +133,14 @@ public class LocalIslandSetupManager {
 
     /**
      * Loads the specified local world and establishes basic properties like game rules.
-     * @param worldName the name of the world
+     * @param id the island ID
      * @param environment the environment of the world
      * @return the newly loaded world or null if setup failed
      */
     @Nullable
-    private World setUpWorld(String worldName, World.Environment environment) {
+    private World setUpWorld(String id, World.Environment environment) {
 
+        String worldName = id + WorldHandler.getWorldSuffix(environment);
         World world = WorldHandler.getLocalWorldCreator(worldName, environment).createWorld();
         if (world == null) return null;
 
@@ -219,6 +211,29 @@ public class LocalIslandSetupManager {
     private void deleteData(String id) throws SQLException {
         String deleteCmd = "DELETE FROM local_islands WHERE id = '" + id + "';";
         Islands.getSqlHandler().getConnection().prepareStatement(deleteCmd).executeUpdate();
+    }
+
+    /**
+     * Creates additional dimension worlds for an existing island.
+     * This is separated so that islands don't have nether and end worlds until they're needed.
+     * @param id the island ID
+     * @param environment the environment of the world to add
+     */
+    public void addWorld(String id, World.Environment environment) {
+
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+
+            try {
+                duplicateTemplate(id, environment);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(Islands.getInstance(), () -> setUpWorld(id, environment));
+
+        });
+
     }
 
 }
