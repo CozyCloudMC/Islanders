@@ -44,7 +44,7 @@ public class LocalIslandSetupManager {
             }
 
             try {
-                duplicateTemplate(id);
+                duplicateTemplates(id);
             } catch (IOException e) {
                 e.printStackTrace();
                 cancelIslandCreation(id, players);
@@ -52,20 +52,25 @@ public class LocalIslandSetupManager {
             }
 
             // World loading must be synchronous
-            // Must occur *after* the folder exists, or it will make its own empty world
+            // Must occur *after* the world folders exist, or it will make its own empty worlds
             Bukkit.getScheduler().runTask(Islands.getInstance(), () -> {
 
-                World world = setUpWorld(id);
+                for (World.Environment env : WorldHandler.getValidEnvironments()) {
 
-                if (world == null) {
-                    cancelIslandCreation(id, players);
-                    return;
+                    String worldName = id + WorldHandler.getWorldSuffix(env);
+                    World world = setUpWorld(worldName, env);
+
+                    if (world == null) {
+                        cancelIslandCreation(id, players);
+                        return;
+                    }
+
                 }
 
-                Islands.getLocalIslandManager().loadIsland(id, members);
+                LocalIsland island = Islands.getLocalIslandManager().loadIsland(id, members);
 
                 for (Player p : players) {
-                    p.teleport(world.getSpawnLocation());
+                    island.spawn(p);
                     p.sendMessage(ChatColor.GREEN + "Welcome to your island!");
                 }
 
@@ -97,17 +102,30 @@ public class LocalIslandSetupManager {
     }
 
     /**
-     * Duplicates local template world's region files without the other data files.
+     * Duplicates local template worlds' region files without the other data files.
      * @param id the island ID
-     * @throws IOException thrown if the folder could not be duplicated
+     * @throws IOException thrown if the folders could not be duplicated
      */
-    private void duplicateTemplate(String id) throws IOException {
+    private void duplicateTemplates(String id) throws IOException {
 
         File worldFolder = Islands.getWorldHandler().getWorldFolder();
-        File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName(), "region");
-        File newRegion = new File(worldFolder + "/" + id, "region");
 
-        FileUtils.copyDirectory(templateRegion, newRegion, false);
+        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+
+            String suffix = WorldHandler.getWorldSuffix(env);
+
+            String dimFolder = switch (env) {
+                default -> "";
+                case NETHER -> "/DIM-1";
+                case THE_END -> "/DIM1";
+            };
+
+            File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName() + suffix + dimFolder, "region");
+            File newRegion = new File(worldFolder + "/" + id + suffix, "region");
+
+            FileUtils.copyDirectory(templateRegion, newRegion, false);
+
+        }
 
     }
 
@@ -124,13 +142,14 @@ public class LocalIslandSetupManager {
 
     /**
      * Loads the specified local world and establishes basic properties like game rules.
-     * @param id the island ID
+     * @param worldName the name of the world
+     * @param environment the environment of the world
      * @return the newly loaded world or null if setup failed
      */
     @Nullable
-    private World setUpWorld(String id) {
+    private World setUpWorld(String worldName, World.Environment environment) {
 
-        World world = WorldHandler.getLocalWorldCreator(id).createWorld();
+        World world = WorldHandler.getLocalWorldCreator(worldName, environment).createWorld();
         if (world == null) return null;
 
         world.setSpawnLocation(new Location(world, 0, 64, 0)); // Temporary location
@@ -154,15 +173,12 @@ public class LocalIslandSetupManager {
     public void deleteIsland(String id, @Nullable CommandSender sender) {
 
         if (sender != null) sender.sendMessage(ChatColor.RED + "Deleting island...");
-
-        Islands.getLocalIslandManager().unloadIsland(id);
-        Islands.getWorldHandler().safelyUnloadWorld(id, false); // Must be synchronous
+        Islands.getLocalIslandManager().unloadIsland(id); // Must be synchronous
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
             try {
-                File file = new File(Islands.getWorldHandler().getWorldFolder(), id);
-                if (file.exists()) FileUtils.deleteDirectory(file);
+                deleteTemplates(id);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -176,6 +192,22 @@ public class LocalIslandSetupManager {
             if (sender != null) sender.sendMessage(ChatColor.DARK_RED + "Island deleted.");
 
         });
+
+    }
+
+    /**
+     * Deletes all world folders related to the island provided.
+     * @param id the island ID
+     * @throws IOException thrown if the folders could not be deleted
+     */
+    private void deleteTemplates(String id) throws IOException {
+
+        File worldFolder = Islands.getWorldHandler().getWorldFolder();
+
+        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+            File file = new File(worldFolder, id + WorldHandler.getWorldSuffix(env));
+            if (file.exists()) FileUtils.deleteDirectory(file);
+        }
 
     }
 

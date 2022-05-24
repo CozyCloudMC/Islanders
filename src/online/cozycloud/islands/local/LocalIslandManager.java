@@ -1,7 +1,9 @@
 package online.cozycloud.islands.local;
 
 import online.cozycloud.islands.Islands;
+import online.cozycloud.islands.WorldHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -54,10 +56,37 @@ public class LocalIslandManager {
 
     }
 
-    public void loadIsland(String id) {loadIsland(id, null);}
-    public void loadIsland(String id, List<UUID> cachedMembers) {if (!localIslands.containsKey(id)) localIslands.put(id, new LocalIsland(id, cachedMembers));}
+    /**
+     * Refer to {@link #loadIsland(String, List)}
+     * @param id the island ID
+     * @return the newly loaded island or an existing island if it is already loaded
+     */
+    public LocalIsland loadIsland(String id) {return loadIsland(id, null);}
 
+    /**
+     * Creates a reference to an island. Unlike worlds, islands should always be loaded as long as the island exists.
+     * @param id the island ID
+     * @param cachedMembers a list of members on hand that can immediately be added to the island
+     * @return the newly loaded island or an existing island if it is already loaded
+     */
+    public LocalIsland loadIsland(String id, @Nullable List<UUID> cachedMembers) {
+
+        if (localIslands.containsKey(id)) return localIslands.get(id);
+
+        LocalIsland island = new LocalIsland(id, cachedMembers);
+        localIslands.put(id, island);
+        return island;
+
+    }
+
+    /**
+     * Removes reference to this island and unloads all related worlds.
+     * @param id the island ID
+     */
     public void unloadIsland(String id) {
+
+        for (World.Environment env : WorldHandler.getValidEnvironments())
+            Islands.getWorldHandler().safelyUnloadWorld(id + WorldHandler.getWorldSuffix(env), false);
 
         LocalIsland island = getIsland(id);
         if (island != null) for (UUID uuid : island.getMembers()) unassignIslandToMember(uuid, id);
@@ -82,6 +111,15 @@ public class LocalIslandManager {
 
         if (!islands.isEmpty()) membersIslands.put(uuid, islands);
         else membersIslands.remove(uuid);
+
+    }
+
+    public void unloadInactiveIslandWorlds() {
+
+        for (World w : Bukkit.getWorlds()) {
+            LocalIsland island = Islands.getLocalIslandManager().getIsland(w.getName());
+            if (island != null && island.hasNoRelevantPlayers()) island.unloadWorlds();
+        }
 
     }
 

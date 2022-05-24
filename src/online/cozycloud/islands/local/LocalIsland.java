@@ -15,17 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ *
+ */
 public class LocalIsland {
 
     private final String ID;
-    private final File WORLD_FILE;
 
     private ArrayList<UUID> members;
 
     protected LocalIsland(String id, @Nullable List<UUID> members) {
 
         ID = id;
-        WORLD_FILE = new File(Islands.getWorldHandler().getWorldFolder(), ID);
         if (members != null) this.members = new ArrayList<>(members);
 
         loadData();
@@ -59,8 +60,7 @@ public class LocalIsland {
      */
     public void spawn(Player player) {
 
-        World world = getWorld();
-        if (world == null) world = loadWorld();
+        World world = getWorld(World.Environment.NORMAL, true);
 
         if (world != null) player.teleport(world.getSpawnLocation());
         else player.sendMessage(ChatColor.RED + "An error occurred. Contact an admin for help!");
@@ -100,18 +100,34 @@ public class LocalIsland {
     }
 
     /**
-     * Loads the local island's world, but does not create one if it doesn't exist.
-     * @return the loaded world or null if world does not exist
+     * Loads the local island's worlds, but does not create them if they don't exist.
      */
-    @Nullable
-    public World loadWorld() {
-        if (!WORLD_FILE.exists()) return null;
-        return WorldHandler.getLocalWorldCreator(ID).createWorld();
+    public void loadWorlds() {
+
+        File worldFolder = Islands.getWorldHandler().getWorldFolder();
+
+        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+
+            String worldName = ID + WorldHandler.getWorldSuffix(env);
+            File file = new File(worldFolder, worldName);
+            if (!file.exists()) continue;
+
+            WorldHandler.getLocalWorldCreator(worldName, env).createWorld();
+
+        }
+
     }
 
-    public void unloadWorld() {Bukkit.unloadWorld(ID, true);}
+    public void unloadWorlds() {
 
-    public String getName() {return ID;}
+        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+            String worldName = ID + WorldHandler.getWorldSuffix(env);
+            Islands.getWorldHandler().safelyUnloadWorld(worldName, true);
+        }
+
+    }
+
+    public String getID() {return ID;}
     public ArrayList<UUID> getMembers() {return new ArrayList<>(members);}
 
     public ArrayList<Player> getOnlineMembers() {
@@ -127,21 +143,54 @@ public class LocalIsland {
     }
 
     /**
-     * Get the world used by this island.
-     * @return the island's world or null if it is not loaded
+     * Get a world used by this island. If not loaded, all the island's worlds will be loaded.
+     * @param environment the environment for the world to get
+     * @param load whether to load the island's worlds if they are not loaded
+     * @return one of the island's worlds or null if it does not exist
      */
     @Nullable
-    public World getWorld() {return Bukkit.getWorld(ID);}
+    public World getWorld(World.Environment environment, boolean load) {
+
+        String worldName = ID + WorldHandler.getWorldSuffix(environment);
+        World world = Bukkit.getWorld(worldName);
+
+        if (world == null && load) {
+            loadWorlds();
+            world = Bukkit.getWorld(worldName);
+        }
+
+        return world;
+
+    }
 
     /**
-     * Check if the island's world has no players and no island members are online
-     * @return true if the world is empty and no island members are online
+     * Get all worlds corresponding to this island.
+     * @param load whether to load the island's worlds if they are not loaded
+     * @return all the island's worlds
+     */
+    public ArrayList<World> getWorlds(boolean load) {
+
+        ArrayList<World> result = new ArrayList<>();
+
+        for (World.Environment env : WorldHandler.getValidEnvironments()) {
+            World world = getWorld(env, load);
+            if (world != null) result.add(world);
+        }
+
+        return result;
+
+    }
+
+    /**
+     * Check if the island's worlds have no players and no island members are online
+     * @return true if the worlds are empty and no island members are online
      */
     public boolean hasNoRelevantPlayers() {
 
-        World world = getWorld();
-        boolean emptyWorld = world == null || world.getPlayers().isEmpty(), noOnlineMembers = getOnlineMembers().isEmpty();
-        return emptyWorld && noOnlineMembers;
+        boolean emptyWorlds = true, noOnlineMembers = getOnlineMembers().isEmpty();
+        for (World w : getWorlds(false)) if (!w.getPlayers().isEmpty()) emptyWorlds = false;
+
+        return emptyWorlds && noOnlineMembers;
 
     }
 

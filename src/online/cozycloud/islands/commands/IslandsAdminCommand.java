@@ -109,7 +109,7 @@ public class IslandsAdminCommand implements TabExecutor {
                 case 3:
                     if (args[0].equalsIgnoreCase("test") && args[1].equalsIgnoreCase("delete"))
                         for (LocalIsland island : Islands.getLocalIslandManager().getIslands()) {
-                        String name = island.getName();
+                        String name = island.getID();
                         if (name.toLowerCase().startsWith(args[2].toLowerCase())) result.add(name);
                     }
 

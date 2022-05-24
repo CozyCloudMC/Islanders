@@ -13,7 +13,7 @@ public class LocalIslandEvents implements Listener {
     public void onQuit(PlayerQuitEvent event) {
 
         // Ran 1 tick later so that the player is not still in the world
-        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> Islands.getWorldHandler().unloadInactiveWorlds(), 1);
+        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> Islands.getLocalIslandManager().unloadInactiveIslandWorlds(), 1);
 
     }
 
@@ -21,7 +21,7 @@ public class LocalIslandEvents implements Listener {
     public void onChangeWorld(PlayerChangedWorldEvent event) {
 
         // Ran 1 tick later so that the player is not still in the world
-        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> Islands.getWorldHandler().unloadInactiveWorlds(), 1);
+        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> Islands.getLocalIslandManager().unloadInactiveIslandWorlds(), 1);
 
     }
 

@@ -51,11 +51,20 @@ public class PlayerDataHandler implements Listener {
         connection.prepareStatement(insertCmd).executeUpdate();
         ResultSet result = connection.prepareStatement(selectCmd).executeQuery();
 
-        // Loads an island's world if the player logs in there
+        // Loads an island's worlds if the player logs in there
         while (result.next()) {
+
             String world = result.getString("world");
-            LocalIsland island = world != null && world.startsWith("0") ? Islands.getLocalIslandManager().getIsland(world) : null;
-            if (island != null) Bukkit.getScheduler().runTask(Islands.getInstance(), island::loadWorld); // Sync
+
+            if (world != null && world.startsWith("0")) {
+
+                String islandID = world.split("_")[0];
+                LocalIsland island = Islands.getLocalIslandManager().getIsland(islandID);
+
+                if (island != null) Bukkit.getScheduler().runTask(Islands.getInstance(), island::loadWorlds); // Sync
+
+            }
+
         }
 
     }

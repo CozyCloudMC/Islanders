@@ -1,6 +1,5 @@
 package online.cozycloud.islands;
 
-import online.cozycloud.islands.local.LocalIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -26,21 +25,15 @@ public class WorldHandler {
 
     public void loadMainWorlds() {
 
-        // Local template
-        getLocalWorldCreator(Islands.getConfigHandler().getLocalTemplateName()).createWorld();
-
-    }
-
-    public void unloadInactiveWorlds() {
-
-        for (World w : Bukkit.getWorlds()) {
-            LocalIsland island = Islands.getLocalIslandManager().getIsland(w.getName());
-            if (island != null && island.hasNoRelevantPlayers()) safelyUnloadWorld(w, true);
+        // Local island templates
+        for (World.Environment env : getValidEnvironments()) {
+            String worldName = Islands.getConfigHandler().getLocalTemplateName() + getWorldSuffix(env);
+            getLocalWorldCreator(worldName, env).createWorld();
         }
 
     }
 
-    public void safelyUnloadWorld(String name, boolean save) {safelyUnloadWorld(Bukkit.getWorld(name), save);}
+    public void safelyUnloadWorld(String worldName, boolean save) {safelyUnloadWorld(Bukkit.getWorld(worldName), save);}
 
     public void safelyUnloadWorld(World world, boolean save) {
 
@@ -51,17 +44,52 @@ public class WorldHandler {
 
     }
 
-    public static WorldCreator getLocalWorldCreator(String name) {
+    /**
+     * Gets the WorldCreator with proper generation settings for a local island world based on its environment.
+     * @param worldName the name of the world
+     * @param environment the environment of the world
+     * @return the WorldCreator based on the environment
+     */
+    public static WorldCreator getLocalWorldCreator(String worldName, World.Environment environment) {
 
         // Sea level should be Y 62
-        String generatorSettings = "{\"layers\": [{\"block\": \"bedrock\", \"height\": 1}, {\"block\": \"sand\", \"height\": 1}, {\"block\": \"water\", \"height\": 125}], \"biome\":\"deep_ocean\"}";
+        String generatorSettings = switch (environment) {
+            default -> "{\"layers\": [{\"block\": \"bedrock\", \"height\": 1}, {\"block\": \"sand\", \"height\": 1}, {\"block\": \"water\", \"height\": 125}], \"biome\":\"deep_ocean\"}";
+            case NETHER -> "{\"layers\": [{\"block\": \"bedrock\", \"height\": 1}, {\"block\": \"netherrack\", \"height\": 1}, {\"block\": \"lava\", \"height\": 125}], \"biome\":\"nether_wastes\"}";
+            case THE_END -> "{\"layers\": [{\"block\": \"air\", \"height\": 1}], \"biome\":\"end_barrens\"}";
+        };
 
-        return new WorldCreator(name)
-                .environment(World.Environment.NORMAL)
+        Islands.getInstance().getLogger().info(worldName + ": " + generatorSettings);
+
+        return new WorldCreator(worldName)
+                .environment(environment)
                 .generateStructures(false)
                 .type(WorldType.FLAT)
                 .generatorSettings(generatorSettings);
 
+    }
+
+    /**
+     * Get the world name suffix for a particular environment.
+     * @param environment the environment of the world
+     * @return the world name suffix
+     */
+    public static String getWorldSuffix(World.Environment environment) {
+
+        return switch (environment) {
+            case NETHER -> "_nether";
+            case THE_END -> "_the_end";
+            default -> "";
+        };
+
+    }
+
+    /**
+     * Gets the environments used by local island worlds.
+     * @return an array of valid environments
+     */
+    public static World.Environment[] getValidEnvironments() {
+        return new World.Environment[] {World.Environment.NORMAL, World.Environment.NETHER, World.Environment.THE_END};
     }
 
 }
