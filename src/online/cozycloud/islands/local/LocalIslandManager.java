@@ -202,4 +202,19 @@ public class LocalIslandManager {
 
     }
 
+    /**
+     * Get the inner biome of a particular environment. This is the biome that is safe for players.
+     * @param environment the environment of the world
+     * @return the inner biome
+     */
+    public static Biome getInnerBiome(World.Environment environment) {
+
+        return switch (environment) {
+            default -> Biome.WARM_OCEAN;
+            case NETHER -> Biome.NETHER_WASTES;
+            case THE_END -> Biome.END_HIGHLANDS;
+        };
+
+    }
+
 }
