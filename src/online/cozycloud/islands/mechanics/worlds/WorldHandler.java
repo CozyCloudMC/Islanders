@@ -4,7 +4,6 @@ import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -16,9 +15,13 @@ public class WorldHandler {
     private final World MAIN_WORLD;
 
     public WorldHandler() {
+
         WORLD_FOLDER = Bukkit.getWorldContainer();
         MAIN_WORLD = Bukkit.getWorld(Islands.getConfigHandler().getWorldName());
+
+        Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islands.getInstance());
         loadMainWorlds();
+
     }
 
     public File getWorldFolder() {return WORLD_FOLDER;}
@@ -46,27 +49,18 @@ public class WorldHandler {
     }
 
     /**
-     * Gets the WorldCreator with proper generation settings for a local island world based on its environment.
+     * Gets the WorldCreator for a local island world based on its environment.
      * @param worldName the name of the world
      * @param environment the environment of the world
      * @return the WorldCreator based on the environment
      */
     public static WorldCreator getLocalWorldCreator(String worldName, World.Environment environment) {
 
-        // Sea level should be Y 62
-        String generatorSettings = switch (environment) {
-            default -> "{\"layers\": [{\"block\": \"bedrock\", \"height\": 1}, {\"block\": \"sand\", \"height\": 1}, {\"block\": \"water\", \"height\": 125}], \"biome\":\"deep_ocean\"}";
-            case NETHER -> "{\"layers\": [{\"block\": \"bedrock\", \"height\": 1}, {\"block\": \"netherrack\", \"height\": 1}, {\"block\": \"lava\", \"height\": 125}], \"biome\":\"nether_wastes\"}";
-            case THE_END -> "{\"layers\": [{\"block\": \"air\", \"height\": 1}], \"biome\":\"end_barrens\"}";
-        };
-
-        Islands.getInstance().getLogger().info(worldName + ": " + generatorSettings);
-
         return new WorldCreator(worldName)
                 .environment(environment)
                 .generateStructures(false)
-                .type(WorldType.FLAT)
-                .generatorSettings(generatorSettings);
+                .biomeProvider(new TemplateBiomeProvider())
+                .generator(new TemplateChunkGenerator());
 
     }
 
