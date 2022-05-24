@@ -1,7 +1,7 @@
 package online.cozycloud.islands.local;
 
 import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.WorldHandler;
+import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;

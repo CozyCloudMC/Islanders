@@ -1,7 +1,7 @@
 package online.cozycloud.islands.local;
 
 import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.WorldHandler;
+import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;

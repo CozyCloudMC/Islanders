@@ -1,5 +1,6 @@
-package online.cozycloud.islands;
+package online.cozycloud.islands.mechanics.worlds;
 
+import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -14,7 +15,7 @@ public class WorldHandler {
     private final File WORLD_FOLDER;
     private final World MAIN_WORLD;
 
-    protected WorldHandler() {
+    public WorldHandler() {
         WORLD_FOLDER = Bukkit.getWorldContainer();
         MAIN_WORLD = Bukkit.getWorld(Islands.getConfigHandler().getWorldName());
         loadMainWorlds();

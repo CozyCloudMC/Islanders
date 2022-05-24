@@ -4,6 +4,7 @@ import online.cozycloud.islands.commands.IslandsAdminCommand;
 import online.cozycloud.islands.commands.IslandsCommand;
 import online.cozycloud.islands.local.LocalIslandManager;
 import online.cozycloud.islands.mechanics.trees.TreeMechanics;
+import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
