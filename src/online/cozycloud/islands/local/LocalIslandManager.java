@@ -4,6 +4,7 @@ import online.cozycloud.islands.Islands;
 import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -183,6 +184,21 @@ public class LocalIslandManager {
         for (String member : members.split(",")) result.add(UUID.fromString(member));
 
         return result;
+
+    }
+
+    /**
+     * Get the outter biome of a particular environment. This is the biome that damages players.
+     * @param environment the environment of the world
+     * @return the outter biome
+     */
+    public static Biome getOutterBiome(World.Environment environment) {
+
+        return switch (environment) {
+            default -> Biome.DEEP_OCEAN;
+            case NETHER -> Biome.CRIMSON_FOREST;
+            case THE_END -> Biome.END_BARRENS;
+        };
 
     }
 
