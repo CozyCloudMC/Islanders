@@ -33,7 +33,11 @@ public class LocalIslandEvents implements Listener {
                 Block block = p.getLocation().getBlock();
                 if (p.getGameMode() != GameMode.SURVIVAL || block.getBiome() != LocalIslandManager.getOutterBiome(p.getWorld().getEnvironment())) continue;
 
-                String msg = block.getType() == Material.WATER ? "You are swimming into the deep, turn back!" : "You are running out of air, turn back!";
+                String msg;
+                if (block.getType() == Material.WATER) msg = "You are swimming into the deep, turn back!";
+                else if (block.getY() < block.getWorld().getSeaLevel()) msg = "You are running out of air, turn back!";
+                else msg = "You are too far from your island, turn back!";
+
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
                 p.damage(1);
 
@@ -70,8 +74,17 @@ public class LocalIslandEvents implements Listener {
             e.setKeepLevel(true);
             e.setDroppedExp(0);
 
-            String msgSuffix = block.getType() == Material.WATER ? " tried to swim away" : " suffocated in a tunnel";
-            e.setDeathMessage(e.getEntity().getName() + msgSuffix);
+            // Only replaces the death message if they were killed by the plugin and not other causes
+            if (e.getDeathMessage() == null || e.getDeathMessage().endsWith("died")) {
+
+                String msgSuffix;
+                if (block.getType() == Material.WATER) msgSuffix = " tried to swim away";
+                else if (block.getY() < block.getWorld().getSeaLevel()) msgSuffix = " suffocated underground";
+                else msgSuffix = " traveled too far away from their island";
+
+                e.setDeathMessage(e.getEntity().getName() + msgSuffix);
+
+            }
 
         }
 
