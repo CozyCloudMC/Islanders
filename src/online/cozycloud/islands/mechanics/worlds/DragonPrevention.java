@@ -38,23 +38,23 @@ public class DragonPrevention implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        tryPlacePortal(event.getPlayer().getWorld());
+    public void onJoin(PlayerJoinEvent e) {
+        tryPlacePortal(e.getPlayer().getWorld());
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event) {
-        tryPlacePortal(event.getPlayer().getWorld());
+    public void onWorldChange(PlayerChangedWorldEvent e) {
+        tryPlacePortal(e.getPlayer().getWorld());
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        if (isProtectedBlock(event.getBlock())) event.setCancelled(true);
+    public void onBreak(BlockBreakEvent e) {
+        if (isProtectedBlock(e.getBlock())) e.setCancelled(true);
     }
 
     @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        if (isProtectedBlock(event.getBlock())) event.setCancelled(true);
+    public void onPlace(BlockPlaceEvent e) {
+        if (isProtectedBlock(e.getBlock())) e.setCancelled(true);
     }
 
 }

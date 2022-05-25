@@ -17,16 +17,16 @@ import java.util.UUID;
 public class PlayerDataHandler implements Listener {
 
     @EventHandler
-    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+    public void onPreLogin(AsyncPlayerPreLoginEvent e) {
 
-        UUID uuid = event.getUniqueId();
-        String name = event.getName();
+        UUID uuid = e.getUniqueId();
+        String name = e.getName();
 
         // Already async
         try {
             handleLogin(uuid, name);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
 
     }
@@ -70,17 +70,17 @@ public class PlayerDataHandler implements Listener {
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event) {
+    public void onWorldChange(PlayerChangedWorldEvent e) {
 
-        Player player = event.getPlayer();
+        Player player = e.getPlayer();
         World world = player.getWorld();
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
             try {
                 updateLastWorld(player, world);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
 
         });

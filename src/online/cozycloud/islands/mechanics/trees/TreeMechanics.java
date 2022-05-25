@@ -34,9 +34,9 @@ public class TreeMechanics implements Listener {
     }
 
     @EventHandler
-    public void onGrow(StructureGrowEvent event) {
+    public void onGrow(StructureGrowEvent e) {
 
-        Location loc = event.getLocation();
+        Location loc = e.getLocation();
         Block origin = get2x2SaplingOrigin(loc.getBlock());
 
         if (origin != null) {
@@ -48,7 +48,7 @@ public class TreeMechanics implements Listener {
 
                 //Removes saplings
                 for (int x = 0; x < 2; ++x) for (int z = 0; z < 2; ++z) origin.getLocation().clone().add(x, 0, z).getBlock().setType(Material.AIR);
-                event.setCancelled(true);
+                e.setCancelled(true);
 
                 pasteTree(tree, origin.getLocation());
 
