@@ -3,10 +3,7 @@ package online.cozycloud.islands.local;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import online.cozycloud.islands.Islands;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class LocalIslandEvents implements Listener {
 
@@ -46,7 +44,21 @@ public class LocalIslandEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent e) {
+    public void onRespawn(PlayerRespawnEvent event) {
+
+        Player player = event.getPlayer();
+        LocalIsland island = Islands.getLocalIslandManager().getMainIsland(player.getUniqueId());
+
+        if (island != null) {
+            World islandWorld = island.getWorld(World.Environment.NORMAL, true);
+            Location respawnLoc = islandWorld != null ? islandWorld.getSpawnLocation() : Islands.getWorldHandler().getMainWorld().getSpawnLocation();
+            event.setRespawnLocation(respawnLoc);
+        }
+
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent e) {
 
         Player player = e.getEntity();
         Block block = player.getLocation().getBlock();
