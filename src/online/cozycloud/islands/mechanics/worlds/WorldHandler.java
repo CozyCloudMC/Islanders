@@ -48,6 +48,11 @@ public class WorldHandler {
 
     }
 
+    public static World getRelatedDimension(World world, World.Environment environment) {
+        String baseName = world.getName().split("_")[0];
+        return Bukkit.getWorld(baseName + getWorldSuffix(environment));
+    }
+
     /**
      * Gets the WorldCreator for a local island world based on its environment.
      * @param worldName the name of the world

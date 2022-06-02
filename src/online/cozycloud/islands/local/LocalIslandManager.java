@@ -128,6 +128,17 @@ public class LocalIslandManager {
     public LocalIsland getIsland(String id) {
         return localIslands.getOrDefault(id, null);
     }
+
+    @Nullable
+    public LocalIsland getIsland(World world) {
+
+        if (world == null) return null;
+
+        String id = world.getName().split("_")[0];
+        return getIsland(id);
+
+    }
+
     public ArrayList<LocalIsland> getIslands() {
         return new ArrayList<>(localIslands.values());
     }

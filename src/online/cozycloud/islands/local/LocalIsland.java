@@ -182,6 +182,16 @@ public class LocalIsland {
     }
 
     /**
+     * Checks if a particular world related to this island has been created.
+     * @param environment the environment of the world to check
+     * @return true if the world has been created
+     */
+    public boolean hasWorld(World.Environment environment) {
+        File file = new File(Islands.getWorldHandler().getWorldFolder(), ID + WorldHandler.getWorldSuffix(environment));
+        return file.exists();
+    }
+
+    /**
      * Check if the island's worlds have no players and no island members are online
      * @return true if the worlds are empty and no island members are online
      */
