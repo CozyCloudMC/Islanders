@@ -20,6 +20,7 @@ public class WorldHandler {
         MAIN_WORLD = Bukkit.getWorld(Islands.getConfigHandler().getWorldName());
 
         Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islands.getInstance());
+        Bukkit.getPluginManager().registerEvents(new PortalHandler(), Islands.getInstance());
         loadMainWorlds();
 
     }
