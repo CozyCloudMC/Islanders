@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,8 @@ import java.util.UUID;
  */
 public class LocalIslandSetupManager {
 
+    private HashMap<String, Long> dimensionCreationCooldowns = new HashMap<>();
+    
     /**
      * Creates a local island for the specified player(s). Only creates overworld.
      * @param players the players starting the island
@@ -216,10 +219,22 @@ public class LocalIslandSetupManager {
     /**
      * Creates additional dimension worlds for an existing island.
      * This is separated so that islands don't have nether and end worlds until they're needed.
+     * Method has a 5 second cooldown to prevent the operation from
      * @param id the island ID
      * @param environment the environment of the world to add
      */
     public void addWorld(String id, World.Environment environment) {
+
+        // Prevents the method from being used if the world already exists.
+        LocalIsland island = Islands.getLocalIslandManager().getIsland(id);
+        if (island != null && island.hasWorld(environment)) return;
+
+        // Prevents multiple worlds being created at the same time due to spam; 5 second cooldown
+        String cooldownKey = id + environment.toString();
+        long cooldown = dimensionCreationCooldowns.containsKey(cooldownKey) ? dimensionCreationCooldowns.get(cooldownKey) : 0;
+        if (System.currentTimeMillis() - cooldown < 5000) return;
+
+        dimensionCreationCooldowns.put(cooldownKey, System.currentTimeMillis());
 
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
