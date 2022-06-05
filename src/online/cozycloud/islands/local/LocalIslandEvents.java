@@ -31,7 +31,8 @@ public class LocalIslandEvents implements Listener {
             for (Player p : Bukkit.getOnlinePlayers()) {
 
                 Block block = p.getLocation().getBlock();
-                if (p.getGameMode() != GameMode.SURVIVAL || block.getBiome() != LocalIslandManager.getOutterBiome(p.getWorld().getEnvironment())) continue;
+                if (p.getGameMode() != GameMode.SURVIVAL || block.getBiome() != LocalIslandManager.getOutterBiome(p.getWorld().getEnvironment()) ||
+                        !Islands.getLocalIslandManager().isIslandWorld(p.getWorld())) continue;
 
                 String msg;
                 if (block.getType() == Material.WATER) msg = "You are swimming into the deep, turn back!";
@@ -69,7 +70,8 @@ public class LocalIslandEvents implements Listener {
         Player player = e.getEntity();
         Block block = player.getLocation().getBlock();
 
-        if (block.getBiome() == LocalIslandManager.getOutterBiome(player.getWorld().getEnvironment())) {
+        if (block.getBiome() == LocalIslandManager.getOutterBiome(player.getWorld().getEnvironment()) &&
+                Islands.getLocalIslandManager().isIslandWorld(player.getWorld())) {
 
             e.setKeepInventory(true);
             e.getDrops().clear();
@@ -97,11 +99,13 @@ public class LocalIslandEvents implements Listener {
 
         Player player = e.getPlayer();
         Block block = e.getBlock();
-        
 
-        if (block.getBiome() == LocalIslandManager.getOutterBiome(e.getPlayer().getWorld().getEnvironment()) && player.getGameMode() == GameMode.SURVIVAL) {
+        if (player.getGameMode() == GameMode.SURVIVAL && block.getBiome() == LocalIslandManager.getOutterBiome(e.getPlayer().getWorld().getEnvironment()) &&
+                Islands.getLocalIslandManager().isIslandWorld(player.getWorld())) {
+
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot destroy blocks here. You are too far from your island!");
+
         }
 
     }
@@ -111,9 +115,12 @@ public class LocalIslandEvents implements Listener {
         Player player = e.getPlayer();
         Block block = e.getBlock();
 
-        if (block.getBiome() == LocalIslandManager.getOutterBiome(e.getPlayer().getWorld().getEnvironment()) && player.getGameMode() == GameMode.SURVIVAL) {
+        if (player.getGameMode() == GameMode.SURVIVAL && block.getBiome() == LocalIslandManager.getOutterBiome(e.getPlayer().getWorld().getEnvironment()) &&
+                Islands.getLocalIslandManager().isIslandWorld(player.getWorld())) {
+
             e.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot place blocks here. You are too far from your island!");
+
         }
 
     }
