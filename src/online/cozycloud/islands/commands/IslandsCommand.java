@@ -10,10 +10,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class IslandsCommand implements TabExecutor {
+
+    private HashMap<UUID, Long> abandonConfirmation = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
@@ -42,10 +45,23 @@ public class IslandsCommand implements TabExecutor {
 
                     LocalIsland island = Islands.getLocalIslandManager().getMainIsland(uuid);
 
-                    // ADD CONFIRMATION LATER
                     if (island != null) {
-                        sender.sendMessage(ChatColor.DARK_RED + "Abandoning your island...");
-                        island.abandon(uuid);
+
+                        long lastConfirmation = abandonConfirmation.containsKey(uuid) ? abandonConfirmation.get(uuid) : 0;
+
+                        // 15 seconds to confirm
+                        if (System.currentTimeMillis() - lastConfirmation < 15000) {
+                            sender.sendMessage(ChatColor.DARK_RED + "Abandoning your island...");
+                            island.abandon(uuid);
+                            abandonConfirmation.remove(uuid);
+                        }
+
+                        else {
+                            abandonConfirmation.put(uuid, System.currentTimeMillis());
+                            if (island.getMembers().size() <= 1) sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "WARNING:" + ChatColor.DARK_RED + " You are the only member of this island; the island will be deleted.");
+                            sender.sendMessage(ChatColor.RED + "Type " + ChatColor.WHITE + "/ abandon" + ChatColor.RED + " again to confirm.");
+                        }
+
                     }
 
                     else sender.sendMessage(ChatColor.RED + "You do not have an island yet!");
