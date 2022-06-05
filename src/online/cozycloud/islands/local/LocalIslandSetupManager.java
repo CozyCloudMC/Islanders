@@ -148,6 +148,7 @@ public class LocalIslandSetupManager {
         if (world == null) return null;
 
         world.setSpawnLocation(new Location(world, 0, 64, 0)); // Temporary location
+        world.getWorldBorder().setSize(300); // Temporary size
         world.setDifficulty(Difficulty.HARD);
         world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         world.setGameRule(GameRule.DISABLE_RAIDS, false);
