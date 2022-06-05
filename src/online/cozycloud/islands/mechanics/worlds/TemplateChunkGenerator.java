@@ -17,18 +17,17 @@ public class TemplateChunkGenerator extends ChunkGenerator {
 
         switch (worldInfo.getEnvironment()) {
 
-            default:
-                chunkData.setRegion(0, worldInfo.getMinHeight()+1, 0, 16, worldInfo.getMinHeight()+2, 16, Material.SAND);
-                chunkData.setRegion(0, worldInfo.getMinHeight()+2, 0, 16, 63, 16, Material.WATER);
-                break;
+            default -> {
+                chunkData.setRegion(0, worldInfo.getMinHeight() + 1, 0, 16, worldInfo.getMinHeight() + 2, 16, Material.SAND);
+                chunkData.setRegion(0, worldInfo.getMinHeight() + 2, 0, 16, 63, 16, Material.WATER);
+            }
 
-            case NETHER:
-                chunkData.setRegion(0, worldInfo.getMinHeight()+1, 0, 16, worldInfo.getMinHeight()+2, 16, Material.NETHERRACK);
-                chunkData.setRegion(0, worldInfo.getMinHeight()+2, 0, 16, 63, 16, Material.LAVA);
-                break;
+            case NETHER -> {
+                chunkData.setRegion(0, worldInfo.getMinHeight() + 1, 0, 16, worldInfo.getMinHeight() + 2, 16, Material.NETHERRACK);
+                chunkData.setRegion(0, worldInfo.getMinHeight() + 2, 0, 16, 63, 16, Material.LAVA);
+            }
 
-            case THE_END:
-                break;
+            case THE_END -> {}
 
         }
 

@@ -96,23 +96,26 @@ public class IslandsAdminCommand implements TabExecutor {
 
             switch (args.length) {
 
-                case 1:
-                    result.addAll(List.of("reload", "worlds", "tp", "test"));
-                    break;
+                case 1 -> result.addAll(List.of("reload", "worlds", "tp", "test"));
 
-                case 2:
+                case 2 -> {
+
                     if (args[0].equalsIgnoreCase("tp")) for (World w : Bukkit.getWorlds()) {
                         String name = w.getName();
                         if (name.toLowerCase().startsWith(args[1].toLowerCase())) result.add(name); // Hides irrelevant results
                     } else if (args[0].equalsIgnoreCase("test")) result.addAll(List.of("create", "delete"));
-                    break;
 
-                case 3:
+                }
+
+                case 3 -> {
+
                     if (args[0].equalsIgnoreCase("test") && args[1].equalsIgnoreCase("delete"))
                         for (LocalIsland island : Islands.getLocalIslandManager().getIslands()) {
-                        String name = island.getID();
-                        if (name.toLowerCase().startsWith(args[2].toLowerCase())) result.add(name);
-                    }
+                            String name = island.getID();
+                            if (name.toLowerCase().startsWith(args[2].toLowerCase())) result.add(name);
+                        }
+
+                }
 
             }
 

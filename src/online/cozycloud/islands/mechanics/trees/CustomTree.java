@@ -10,24 +10,15 @@ public enum CustomTree {
     // TO BE EXPANDED
     TEST("Test"), TEST2("Test2");
 
-    private String name;
-    CustomTree(String name) {this.name = name;}
+    private final String NAME;
+    CustomTree(String name) {NAME = name;}
 
     public File getFile() {
 
-        String fileName = null;
-
-        switch (name) {
-
-            case "Test":
-                fileName = "ae.schem";
-                break;
-
-            case "Test2":
-                fileName = "sus.schem";
-                break;
-
-        }
+        String fileName = switch (NAME) {
+            case "Test" -> "ae.schem";
+            case "Test2" -> "sus.schem";
+        };
 
         return new File(Islands.getInstance().getDataFolder() + "/schematics/trees", fileName);
 
@@ -35,15 +26,10 @@ public enum CustomTree {
 
     public Material getSapling() {
 
-        switch (name) {
-
-            case "Test":
-            case "Test2":
-                return Material.OAK_SAPLING;
-
-        }
-
-        return null;
+        return switch (NAME) {
+            case "Test", "Test2" -> Material.OAK_SAPLING;
+            default -> null;
+        };
 
     }
 

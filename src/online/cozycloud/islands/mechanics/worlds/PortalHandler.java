@@ -64,15 +64,13 @@ public class PortalHandler implements Listener {
 
             switch (e.getLocation().getBlock().getType()) {
 
-                case NETHER_PORTAL:
+                case NETHER_PORTAL -> {
                     lastNetherPortalCheck.put(player.getUniqueId(), System.currentTimeMillis());
                     initiateNetherTeleport(player);
-                    break;
+                }
 
-                case END_PORTAL:
-                    endPortalTeleport(player);
-                    break;
-
+                case END_PORTAL -> endPortalTeleport(player);
+                
             }
 
         }

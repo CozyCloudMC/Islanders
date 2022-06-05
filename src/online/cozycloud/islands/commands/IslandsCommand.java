@@ -68,11 +68,7 @@ public class IslandsCommand implements TabExecutor {
         if (cmd.getName().equalsIgnoreCase("islands")) {
 
             switch (args.length) {
-
-                case 1:
-                    result.addAll(List.of("go", "abandon"));
-                    break;
-
+                case 1 -> result.addAll(List.of("go", "abandon"));
             }
 
         }
