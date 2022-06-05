@@ -101,6 +101,7 @@ public class LocalIsland {
 
     /**
      * Loads the local island's worlds, but does not create them if they don't exist.
+     * Island is considered active when this method is called.
      */
     public void loadWorlds() {
 
@@ -116,6 +117,8 @@ public class LocalIsland {
 
         }
 
+        updateActivity();
+
     }
 
     public void unloadWorlds() {
@@ -124,6 +127,24 @@ public class LocalIsland {
             String worldName = ID + WorldHandler.getWorldSuffix(env);
             Islands.getWorldHandler().safelyUnloadWorld(worldName, true);
         }
+
+    }
+
+    /**
+     * Sets the island's activity to the current time in the database.
+     */
+    public void updateActivity() {
+
+        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+
+            try {
+                String updateCmd = "UPDATE local_islands SET last_active = '" + System.currentTimeMillis() + "' WHERE id = '" + ID + "';";
+                Islands.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        });
 
     }
 

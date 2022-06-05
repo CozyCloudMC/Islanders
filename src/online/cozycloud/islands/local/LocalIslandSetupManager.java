@@ -130,7 +130,7 @@ public class LocalIslandSetupManager {
      * @throws SQLException thrown if a connection could not be made to the database
      */
     private void createData(String id, List<UUID> members) throws SQLException {
-        String insertCmd = "INSERT INTO local_islands(id, members) VALUES ('" + id + "', '" + LocalIslandManager.membersToString(members) + "');";
+        String insertCmd = "INSERT INTO local_islands(id, members, last_active) VALUES ('" + id + "', '" + LocalIslandManager.membersToString(members) + "', '" + System.currentTimeMillis() + "');";
         Islands.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
     }
 
