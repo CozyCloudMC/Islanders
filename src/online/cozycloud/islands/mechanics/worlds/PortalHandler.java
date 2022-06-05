@@ -4,7 +4,6 @@ import online.cozycloud.islands.Islands;
 import online.cozycloud.islands.local.LocalIsland;
 import online.cozycloud.islands.local.LocalIslandManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,54 +60,22 @@ public class PortalHandler implements Listener {
     @EventHandler // Called constantly when entity is in a portal
     public void onPortalEnter(EntityPortalEnterEvent e) {
 
-        if (e.getEntity() instanceof Player player && e.getLocation().getBlock().getType() == Material.NETHER_PORTAL) {
-            lastNetherPortalCheck.put(player.getUniqueId(), System.currentTimeMillis());
-            initiateNetherTeleport(player);
-        }
+        if (e.getEntity() instanceof Player player) {
 
-    }
+            switch (e.getLocation().getBlock().getType()) {
 
-    /**
-     * Prepares to teleport a player standing in a nether portal.
-     * @param player the player to teleport
-     */
-    private void initiateNetherTeleport(Player player) {
+                case NETHER_PORTAL:
+                    lastNetherPortalCheck.put(player.getUniqueId(), System.currentTimeMillis());
+                    initiateNetherTeleport(player);
+                    break;
 
-        UUID uuid = player.getUniqueId();
-        if (teleporting.containsKey(player)) return;
+                case END_PORTAL:
+                    endPortalTeleport(player);
+                    break;
 
-        World world = player.getWorld();
-
-        // Creates a local island's nether if it does not exist
-        if (world.getEnvironment() == World.Environment.NORMAL) {
-            LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
-            if (island != null && !island.hasWorld(World.Environment.NETHER)) LocalIslandManager.getLocalIslandSetupManager().addWorld(island.getID(), World.Environment.NETHER);
-        }
-
-        teleporting.put(player, Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> {
-
-            if (player.isOnline() && isInNetherPortal(player)) {
-                netherTeleport(player);
-                teleporting.remove(player);
             }
 
-        }, 80));
-
-    }
-
-    /**
-     * Teleports a player through a nether portal to the corresponding world.
-     * @param player the player to teleport
-     */
-    private void netherTeleport(Player player) {
-
-        World world = player.getWorld();
-        World.Environment toEnvironment = world.getEnvironment() == World.Environment.NORMAL ? World.Environment.NETHER : World.Environment.NORMAL;
-        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
-
-        // Does not attempt to load world in case the world creation is currently taking place
-        World toWorld = island != null ? island.getWorld(toEnvironment, false) : WorldHandler.getRelatedDimension(world, toEnvironment);
-        if (toWorld != null) player.teleport(toWorld.getSpawnLocation());
+        }
 
     }
 
@@ -124,6 +91,68 @@ public class PortalHandler implements Listener {
 
         // Last check must have happened at least 100 milliseconds ago
         return System.currentTimeMillis() - lastNetherPortalCheck.get(uuid) <= 100;
+
+    }
+
+    /**
+     * Prepares to teleport a player standing in a nether portal.
+     * @param player the player to teleport
+     */
+    private void initiateNetherTeleport(Player player) {
+
+        if (teleporting.containsKey(player)) return;
+        World world = player.getWorld();
+
+        // Creates a local island's nether if it does not exist
+        if (world.getEnvironment() != World.Environment.NETHER) {
+            LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+            if (island != null && !island.hasWorld(World.Environment.NETHER)) LocalIslandManager.getLocalIslandSetupManager().addWorld(island.getID(), World.Environment.NETHER);
+        }
+
+        teleporting.put(player, Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> {
+
+            if (player.isOnline() && isInNetherPortal(player)) {
+                netherPortalTeleport(player);
+                teleporting.remove(player);
+            }
+
+        }, 80));
+
+    }
+
+    /**
+     * Teleports a player through a nether portal to the corresponding world.
+     * @param player the player to teleport
+     */
+    private void netherPortalTeleport(Player player) {
+
+        World world = player.getWorld();
+        World.Environment toEnvironment = world.getEnvironment() != World.Environment.NETHER ? World.Environment.NETHER : World.Environment.NORMAL;
+        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+
+        // Does not attempt to load world in case the world creation is currently taking place
+        World toWorld = island != null ? island.getWorld(toEnvironment, false) : WorldHandler.getRelatedDimension(world, toEnvironment);
+        if (toWorld != null) player.teleport(toWorld.getSpawnLocation());
+
+    }
+
+    /**
+     * Teleports a player through an end portal to the corresponding world.
+     * @param player the player to teleport
+     */
+    private void endPortalTeleport(Player player) {
+
+        World world = player.getWorld();
+        World.Environment toEnvironment = world.getEnvironment() != World.Environment.THE_END ? World.Environment.THE_END : World.Environment.NORMAL;
+        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+
+        // Creates a local island's end if it does not exist
+        if (world.getEnvironment() != World.Environment.THE_END && island != null && !island.hasWorld(World.Environment.THE_END))
+            LocalIslandManager.getLocalIslandSetupManager().addWorld(island.getID(), World.Environment.THE_END);
+
+        // Does not attempt to load world in case the world creation is currently taking place
+        World toWorld = island != null ? island.getWorld(toEnvironment, false) : WorldHandler.getRelatedDimension(world, toEnvironment);
+        if (toWorld != null) player.teleport(toWorld.getSpawnLocation());
 
     }
 
