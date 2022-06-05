@@ -139,6 +139,15 @@ public class LocalIslandManager {
 
     }
 
+    /**
+     * Check if a world belongs to a local island.
+     * @param world the world to check
+     * @return true if it belongs to a local island
+     */
+    public boolean isIslandWorld(World world) {
+        return getIsland(world) != null;
+    }
+
     public ArrayList<LocalIsland> getIslands() {
         return new ArrayList<>(localIslands.values());
     }
