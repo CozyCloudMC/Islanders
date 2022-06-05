@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -102,6 +104,22 @@ public class PlayerDataHandler implements Listener {
 
         Islands.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
 
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+
+        e.setJoinMessage(null);
+        if (!Islands.getLocalIslandManager().isIslandWorld(world)) player.teleport(world.getSpawnLocation());
+
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        e.setQuitMessage(null);
     }
 
 }
