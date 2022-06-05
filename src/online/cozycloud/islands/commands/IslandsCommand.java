@@ -23,7 +23,7 @@ public class IslandsCommand implements TabExecutor {
 
         if (cmd.getName().equalsIgnoreCase("islands") && sender instanceof Player player) {
 
-            String usage = ChatColor.RED + "Usage: /is <go|abandon>";
+            String usage = ChatColor.RED + "Usage: /" + label + " <go|abandon>";
             UUID uuid = player.getUniqueId();
 
             if (args.length >= 1) {
@@ -59,7 +59,7 @@ public class IslandsCommand implements TabExecutor {
                         else {
                             abandonConfirmation.put(uuid, System.currentTimeMillis());
                             if (island.getMembers().size() <= 1) sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "WARNING:" + ChatColor.DARK_RED + " You are the only member of this island; the island will be deleted.");
-                            sender.sendMessage(ChatColor.RED + "Type " + ChatColor.WHITE + "/ abandon" + ChatColor.RED + " again to confirm.");
+                            sender.sendMessage(ChatColor.RED + "Type " + ChatColor.WHITE + "/" + label + " abandon" + ChatColor.RED + " again to confirm.");
                         }
 
                     }

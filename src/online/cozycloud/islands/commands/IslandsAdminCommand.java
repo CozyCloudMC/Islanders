@@ -24,7 +24,7 @@ public class IslandsAdminCommand implements TabExecutor {
 
             if (sender.hasPermission("islands.admin")) {
 
-                String usage = ChatColor.RED + "Usage: /isa <reload|worlds|tp|test>";
+                String usage = ChatColor.RED + "Usage: /" + label + " <reload|worlds|tp|test>";
 
                 if (args.length >= 1) {
 
@@ -56,7 +56,7 @@ public class IslandsAdminCommand implements TabExecutor {
 
                             } else sender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not loaded!");
 
-                        } else sender.sendMessage(ChatColor.RED + "Usage: /isa tp <world>");
+                        } else sender.sendMessage(ChatColor.RED + "Usage: /" + label + " tp <world>");
 
                     }
 
@@ -69,11 +69,11 @@ public class IslandsAdminCommand implements TabExecutor {
                             else if (args[1].equalsIgnoreCase("delete")) {
 
                                 if (args.length >= 3) LocalIslandManager.getLocalIslandSetupManager().deleteIsland(args[2], sender);
-                                else sender.sendMessage(ChatColor.RED + "Usage: /isa test delete <name>");
+                                else sender.sendMessage(ChatColor.RED + "Usage: /" + label + " test delete <name>");
 
-                            } else sender.sendMessage(ChatColor.RED + "Usage: /isa test <create|delete>");
+                            } else sender.sendMessage(ChatColor.RED + "Usage: /" + label + " test <create|delete>");
 
-                        } else sender.sendMessage(ChatColor.RED + "Usage: /isa test <create|delete>");
+                        } else sender.sendMessage(ChatColor.RED + "Usage: /" + label + " test <create|delete>");
 
                     } else sender.sendMessage(usage);
 
