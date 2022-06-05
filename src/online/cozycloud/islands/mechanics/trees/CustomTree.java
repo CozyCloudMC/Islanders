@@ -18,6 +18,7 @@ public enum CustomTree {
         String fileName = switch (NAME) {
             case "Test" -> "ae.schem";
             case "Test2" -> "sus.schem";
+            default -> throw new IllegalStateException("Unexpected value");
         };
 
         return new File(Islands.getInstance().getDataFolder() + "/schematics/trees", fileName);
