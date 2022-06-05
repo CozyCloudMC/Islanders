@@ -4,6 +4,7 @@ import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -35,6 +36,9 @@ public class WorldHandler {
             String worldName = Islands.getConfigHandler().getLocalTemplateName() + getWorldSuffix(env);
             getLocalWorldCreator(worldName, env).createWorld();
         }
+
+        // Temporary
+        new WorldCreator("trees").environment(World.Environment.NORMAL).generateStructures(false).type(WorldType.FLAT).createWorld();
 
     }
 
