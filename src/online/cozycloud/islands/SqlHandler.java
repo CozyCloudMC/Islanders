@@ -19,12 +19,27 @@ public class SqlHandler {
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
 
             try {
-                openConnection();
+                createTables();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
         });
+
+    }
+
+    /**
+     * Creates the tables used by the plugin if they do not exist.
+     * @throws SQLException thrown if the SQL connection could not be opened
+     */
+    private void createTables() throws SQLException {
+
+        String localIslandsCmd = "CREATE TABLE IF NOT EXISTS local_islands(id CHAR(13) NOT NULL PRIMARY KEY, members VARCHAR(1000), last_active BIGINT(255) unsigned);",
+                playerDataCmd = "CREATE TABLE IF NOT EXISTS player_data(uuid CHAR(36) NOT NULL PRIMARY KEY, name VARCHAR(16), world VARCHAR(50));";
+
+        Connection connection = getConnection();
+        connection.prepareStatement(localIslandsCmd).executeUpdate();
+        connection.prepareStatement(playerDataCmd).executeUpdate();
 
     }
 
