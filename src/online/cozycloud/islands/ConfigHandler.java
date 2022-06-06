@@ -1,9 +1,11 @@
 package online.cozycloud.islands;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ConfigHandler {
@@ -14,8 +16,8 @@ public class ConfigHandler {
     private String sqlDatabase;
     private String sqlUsername;
     private String sqlPassword;
-    private String worldName;
     private String localTemplateName;
+    private ConfigurationSection loadWorlds;
 
     protected ConfigHandler() {
         FILE = new File(Islands.getInstance().getDataFolder(), "config.yml");
@@ -29,8 +31,8 @@ public class ConfigHandler {
     public String getSqlDatabase() {return sqlDatabase != null ? sqlDatabase : "islands";}
     public String getSqlUsername() {return sqlUsername != null ? sqlUsername : "root";}
     public String getSqlPassword() {return sqlPassword != null ? sqlPassword : "";}
-    public String getWorldName() {return worldName != null ? worldName : "islands";}
     public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "template";}
+    public ConfigurationSection getLoadWorlds() {return loadWorlds != null ? loadWorlds : null;}
 
     /**
      * Sets variables to values specified by the config if they exist.
@@ -58,8 +60,8 @@ public class ConfigHandler {
 
             Set<String> worldsSection = config.getConfigurationSection("worlds").getKeys(false);
 
-            if (worldsSection.contains("world_name")) worldName = config.getString("worlds.world_name");
             if (worldsSection.contains("local_template_name")) localTemplateName = config.getString("worlds.local_template_name");
+            if (worldsSection.contains("load")) loadWorlds = config.getConfigurationSection("worlds.load");
 
         }
 
@@ -76,8 +78,8 @@ public class ConfigHandler {
         config.set("sql.database", getSqlDatabase());
         config.set("sql.username", getSqlUsername());
         config.set("sql.password", getSqlPassword());
-        config.set("worlds.world_name", getWorldName());
         config.set("worlds.local_template_name", getLocalTemplateName());
+        config.set("worlds.load", new HashSet<>());
 
         try {
             config.save(FILE);

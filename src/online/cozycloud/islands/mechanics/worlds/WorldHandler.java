@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -13,12 +14,12 @@ import java.util.ArrayList;
 public class WorldHandler {
 
     private final File WORLD_FOLDER;
-    private final World MAIN_WORLD;
+    private World mainWorld;
 
     public WorldHandler() {
 
         WORLD_FOLDER = Bukkit.getWorldContainer();
-        MAIN_WORLD = Bukkit.getWorld(Islands.getConfigHandler().getWorldName());
+        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> mainWorld = Bukkit.getWorlds().get(0), 1);
 
         Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islands.getInstance());
         Bukkit.getPluginManager().registerEvents(new PortalHandler(), Islands.getInstance());
@@ -27,18 +28,31 @@ public class WorldHandler {
     }
 
     public File getWorldFolder() {return WORLD_FOLDER;}
-    public World getMainWorld() {return MAIN_WORLD;}
+    public World getMainWorld() {return mainWorld;}
 
+    /**
+     * Loads the worlds specified in the "load" section of the config.
+     */
     public void loadMainWorlds() {
 
-        // Local island templates
-        for (World.Environment env : getValidEnvironments()) {
-            String worldName = Islands.getConfigHandler().getLocalTemplateName() + getWorldSuffix(env);
-            getLocalWorldCreator(worldName, env).createWorld();
-        }
+        ConfigurationSection loadWorlds = Islands.getConfigHandler().getLoadWorlds();
 
-        // Temporary
-        new WorldCreator("trees").environment(World.Environment.NORMAL).generateStructures(false).type(WorldType.FLAT).createWorld();
+        for (String worldName : loadWorlds.getKeys(false)) {
+
+            if (Bukkit.getWorld(worldName) != null) continue; // Skips already loaded worlds
+
+            World.Environment env = World.Environment.valueOf(loadWorlds.getString(worldName + ".environment"));
+            String type = loadWorlds.getString(worldName + ".type");
+            if (type == null) continue;
+
+            WorldCreator creator = switch (type) {
+                case "LOCAL" -> getLocalWorldCreator(worldName, env);
+                default -> new WorldCreator(worldName).environment(env).type(WorldType.valueOf(type)).generateStructures(false);
+            };
+
+            creator.createWorld();
+
+        }
 
     }
 
