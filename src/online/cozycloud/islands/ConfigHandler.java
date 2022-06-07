@@ -2,11 +2,10 @@ package online.cozycloud.islands;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ConfigHandler {
 
@@ -33,11 +32,11 @@ public class ConfigHandler {
     public String getSqlUsername() {return sqlUsername != null ? sqlUsername : "root";}
     public String getSqlPassword() {return sqlPassword != null ? sqlPassword : "";}
     public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "template";}
-    public ConfigurationSection getLoadWorlds() {return loadWorlds != null ? loadWorlds : null;}
-    public ConfigurationSection getStartStations() {return startStations != null ? startStations : null;}
+    public @Nullable ConfigurationSection getLoadWorlds() {return loadWorlds;}
+    public @Nullable ConfigurationSection getStartStations() {return startStations;}
 
     /**
-     * Sets variables to values specified by the config if they exist.
+     * Sets variables to values specified by the config or null if they do not exist.
      * This must be run for any changes in the config to take effect.
      */
     public void reload() {
@@ -45,32 +44,18 @@ public class ConfigHandler {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(FILE);
         if (!FILE.exists()) initialize(config);
 
-        Set<String> rootSection = config.getKeys(false);
+        // sql
+        sqlAddress = config.getString("sql.address");
+        sqlDatabase = config.getString("sql.database");
+        sqlUsername = config.getString("sql.username");
+        sqlPassword = config.getString("sql.password");
 
-        if (rootSection.contains("sql")) {
+        // worlds
+        localTemplateName = config.getString("worlds.local_template_name");
+        loadWorlds = config.getConfigurationSection("worlds.load");
 
-            Set<String> sqlSection = config.getConfigurationSection("sql").getKeys(false);
-
-            if (sqlSection.contains("address")) sqlAddress = config.getString("sql.address");
-            if (sqlSection.contains("database")) sqlDatabase = config.getString("sql.database");
-            if (sqlSection.contains("username")) sqlUsername = config.getString("sql.username");
-            if (sqlSection.contains("password")) sqlPassword = config.getString("sql.password");
-
-        }
-
-        if (rootSection.contains("worlds")) {
-
-            Set<String> worldsSection = config.getConfigurationSection("worlds").getKeys(false);
-
-            if (worldsSection.contains("local_template_name")) localTemplateName = config.getString("worlds.local_template_name");
-            if (worldsSection.contains("load")) loadWorlds = config.getConfigurationSection("worlds.load");
-
-        }
-
-        if (rootSection.contains("components")) {
-            Set<String> componentsSection = config.getConfigurationSection("components").getKeys(false);
-            if (componentsSection.contains("start_stations")) startStations = config.getConfigurationSection("components.start_stations");
-        }
+        // components
+        startStations = config.getConfigurationSection("components.start_stations");
 
     }
 
@@ -86,7 +71,8 @@ public class ConfigHandler {
         config.set("sql.username", getSqlUsername());
         config.set("sql.password", getSqlPassword());
         config.set("worlds.local_template_name", getLocalTemplateName());
-        config.set("worlds.load", new HashSet<>());
+        config.createSection("worlds.load");
+        config.createSection("components.start_stations");
 
         try {
             config.save(FILE);
