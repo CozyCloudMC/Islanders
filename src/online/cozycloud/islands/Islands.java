@@ -3,6 +3,7 @@ package online.cozycloud.islands;
 import online.cozycloud.islands.commands.IslandsAdminCommand;
 import online.cozycloud.islands.commands.IslandsCommand;
 import online.cozycloud.islands.local.LocalIslandManager;
+import online.cozycloud.islands.mechanics.npcs.NpcHandler;
 import online.cozycloud.islands.mechanics.trees.TreeMechanics;
 import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ public class Islands extends JavaPlugin {
     private static ConfigHandler configHandler;
     private static SqlHandler sqlHandler;
     private static WorldHandler worldHandler;
+    private static NpcHandler npcHandler;
     private static LocalIslandManager localIslandManager;
 
     @Override
@@ -23,6 +25,7 @@ public class Islands extends JavaPlugin {
         configHandler = new ConfigHandler();
         sqlHandler = new SqlHandler();
         worldHandler = new WorldHandler();
+        npcHandler = new NpcHandler();
         localIslandManager = new LocalIslandManager();
 
         getCommand("islands").setExecutor(new IslandsCommand());
@@ -37,6 +40,7 @@ public class Islands extends JavaPlugin {
     public static ConfigHandler getConfigHandler() {return configHandler;}
     public static SqlHandler getSqlHandler() {return sqlHandler;}
     public static WorldHandler getWorldHandler() {return worldHandler;}
+    public static NpcHandler getNpcHandler() {return npcHandler;}
     public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
 
 }
