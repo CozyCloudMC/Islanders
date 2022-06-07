@@ -18,6 +18,7 @@ public class ConfigHandler {
     private String sqlPassword;
     private String localTemplateName;
     private ConfigurationSection loadWorlds;
+    private ConfigurationSection startStations;
 
     protected ConfigHandler() {
         FILE = new File(Islands.getInstance().getDataFolder(), "config.yml");
@@ -33,6 +34,7 @@ public class ConfigHandler {
     public String getSqlPassword() {return sqlPassword != null ? sqlPassword : "";}
     public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "template";}
     public ConfigurationSection getLoadWorlds() {return loadWorlds != null ? loadWorlds : null;}
+    public ConfigurationSection getStartStations() {return startStations != null ? startStations : null;}
 
     /**
      * Sets variables to values specified by the config if they exist.
@@ -63,6 +65,11 @@ public class ConfigHandler {
             if (worldsSection.contains("local_template_name")) localTemplateName = config.getString("worlds.local_template_name");
             if (worldsSection.contains("load")) loadWorlds = config.getConfigurationSection("worlds.load");
 
+        }
+
+        if (rootSection.contains("components")) {
+            Set<String> componentsSection = config.getConfigurationSection("components").getKeys(false);
+            if (componentsSection.contains("start_stations")) startStations = config.getConfigurationSection("components.start_stations");
         }
 
     }
