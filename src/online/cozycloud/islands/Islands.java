@@ -4,6 +4,7 @@ import online.cozycloud.islands.commands.IslandsAdminCommand;
 import online.cozycloud.islands.commands.IslandsCommand;
 import online.cozycloud.islands.local.LocalIslandManager;
 import online.cozycloud.islands.mechanics.npcs.NpcHandler;
+import online.cozycloud.islands.mechanics.startstation.StartStationManager;
 import online.cozycloud.islands.mechanics.trees.TreeMechanics;
 import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ public class Islands extends JavaPlugin {
     private static WorldHandler worldHandler;
     private static NpcHandler npcHandler;
     private static LocalIslandManager localIslandManager;
+    private static StartStationManager startStationManager;
 
     @Override
     public void onEnable() {
@@ -27,12 +29,14 @@ public class Islands extends JavaPlugin {
         worldHandler = new WorldHandler();
         npcHandler = new NpcHandler();
         localIslandManager = new LocalIslandManager();
+        startStationManager = new StartStationManager();
 
         getCommand("islands").setExecutor(new IslandsCommand());
         getCommand("islandsadmin").setExecutor(new IslandsAdminCommand());
 
         Bukkit.getPluginManager().registerEvents(new TreeMechanics(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDataHandler(), this);
+        Bukkit.getPluginManager().registerEvents(startStationManager, this);
 
     }
 
@@ -42,5 +46,6 @@ public class Islands extends JavaPlugin {
     public static WorldHandler getWorldHandler() {return worldHandler;}
     public static NpcHandler getNpcHandler() {return npcHandler;}
     public static LocalIslandManager getLocalIslandManager() {return localIslandManager;}
+    public static StartStationManager getStartStationManager() {return startStationManager;}
 
 }

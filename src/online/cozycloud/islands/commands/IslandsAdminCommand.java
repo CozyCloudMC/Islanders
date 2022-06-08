@@ -29,9 +29,13 @@ public class IslandsAdminCommand implements TabExecutor {
                 if (args.length >= 1) {
 
                     if (args[0].equalsIgnoreCase("reload")) {
+
                         Islands.getConfigHandler().reload();
                         Islands.getWorldHandler().loadMainWorlds();
+                        Islands.getStartStationManager().reload();
+
                         sender.sendMessage(ChatColor.GREEN + "Plugin reloaded!");
+
                     }
 
                     else if (args[0].equalsIgnoreCase("worlds")) {
