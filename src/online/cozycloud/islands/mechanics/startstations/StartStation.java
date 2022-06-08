@@ -1,4 +1,4 @@
-package online.cozycloud.islands.mechanics.startstation;
+package online.cozycloud.islands.mechanics.startstations;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
