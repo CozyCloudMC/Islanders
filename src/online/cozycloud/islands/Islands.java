@@ -4,7 +4,7 @@ import online.cozycloud.islands.commands.IslandsAdminCommand;
 import online.cozycloud.islands.commands.IslandsCommand;
 import online.cozycloud.islands.local.LocalIslandManager;
 import online.cozycloud.islands.mechanics.npcs.NpcHandler;
-import online.cozycloud.islands.mechanics.startstation.StartStationManager;
+import online.cozycloud.islands.mechanics.startstations.StartStationManager;
 import online.cozycloud.islands.mechanics.trees.TreeMechanics;
 import online.cozycloud.islands.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package online.cozycloud.islands.mechanics.startstation;
+package online.cozycloud.islands.mechanics.startstations;
 
 import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
