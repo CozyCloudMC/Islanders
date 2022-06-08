@@ -29,7 +29,7 @@ public class LocalIslandSetupManager {
      */
     public void createIsland(List<Player> players) {
 
-        for (Player p : players) p.sendMessage(ChatColor.GRAY + "Creating your island...");
+        if (players.isEmpty()) return;
 
         // SQL operations and file duplication are run asynchronously to avoid lagging the main thread
         Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
