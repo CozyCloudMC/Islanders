@@ -5,6 +5,10 @@ import org.bukkit.Material;
 
 import java.io.File;
 
+// Schematic sources
+// https://www.planetminecraft.com/project/fantasy-tree-repository/
+// https://www.planetminecraft.com/project/native-trees-of-europe-template-repository-1779952/
+
 public enum CustomTree {
 
     WOW25("WOW25"), WOW26("WOW26"), WOW27("WOW27"), WOW28("WOW28"), WOW29("WOW29"), WOW73("WOW73"), WOW80("WOW80"),
