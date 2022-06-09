@@ -66,7 +66,10 @@ public class StartStation {
                 String msg = time > 0 ? "Creating island in " + ChatColor.YELLOW + ChatColor.BOLD + time + ChatColor.RESET + "..." :
                         ChatColor.GREEN + "" + ChatColor.BOLD + "Creating island...";
 
-                for (Player p : players) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
+                for (Player p : players) {
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
+                    if (time <= 4) p.playSound(p.getLocation(), time > 0 ? Sound.BLOCK_NOTE_BLOCK_HAT : Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
 
             } else {
                 cancelTimer();
