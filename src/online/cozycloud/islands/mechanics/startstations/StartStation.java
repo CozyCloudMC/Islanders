@@ -120,12 +120,15 @@ public class StartStation {
 
         ArrayList<UUID> result = new ArrayList<>();
 
-        for (Player p : LEVER.getWorld().getPlayers()) if (p.getGameMode() != GameMode.SPECTATOR) {
+        for (Player p : LEVER.getWorld().getPlayers()) {
+
+            UUID uuid = p.getUniqueId();
+            if (p.getGameMode() == GameMode.SPECTATOR || !Islands.getLocalIslandManager().getIslandsWithMember(uuid).isEmpty()) continue;
 
             Location loc = p.getLocation();
             int x = loc.getBlockX(), z = loc.getBlockZ();
 
-            if (x >= X1 && x <= X2 && z >= Z1 && z <= Z2) result.add(p.getUniqueId());
+            if (x >= X1 && x <= X2 && z >= Z1 && z <= Z2) result.add(uuid);
 
         }
 
