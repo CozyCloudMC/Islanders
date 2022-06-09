@@ -1,5 +1,7 @@
 package online.cozycloud.islands.mechanics.startstations;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import online.cozycloud.islands.Islands;
@@ -15,22 +17,30 @@ import java.util.UUID;
 
 public class StartStation {
 
+    private final ChatColor COLOR;
     private final Block LEVER;
     private final int X1;
     private final int X2;
     private final int Z1;
     private final int Z2;
+    private final Hologram HOLOGRAM;
 
     private BukkitTask timer;
     private int time = 5;
 
-    public StartStation(Block lever, int x1, int x2, int z1, int z2) {
+    public StartStation(ChatColor color, Block lever, int x1, int x2, int z1, int z2) {
 
+        COLOR = color;
         LEVER = lever;
         X1 = x1;
         X2 = x2;
         Z1 = z1;
         Z2 = z2;
+
+        HOLOGRAM = HologramsAPI.createHologram(Islands.getInstance(), lever.getLocation().clone().add(0.5, 2, 0.5));
+        HOLOGRAM.appendTextLine(COLOR + "" + ChatColor.BOLD + "Start Your Island");
+        HOLOGRAM.appendTextLine("Stand in the boat with your team");
+        HOLOGRAM.appendTextLine("and flip the lever to begin!");
 
         resetLever();
 
@@ -83,6 +93,14 @@ public class StartStation {
 
         }, 0, 20);
 
+    }
+
+    /**
+     * Cancels the timer and deletes the hologram.
+     */
+    public void deactivate() {
+        if (HOLOGRAM != null) HOLOGRAM.delete();
+        cancelTimer();
     }
 
     /**

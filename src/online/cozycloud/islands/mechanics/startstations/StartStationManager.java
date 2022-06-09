@@ -2,6 +2,7 @@ package online.cozycloud.islands.mechanics.startstations;
 
 import online.cozycloud.islands.Islands;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,7 +25,7 @@ public class StartStationManager implements Listener {
 
     public void reload() {
 
-        for (StartStation ss : startStations.values()) ss.cancelTimer();
+        for (StartStation ss : startStations.values()) ss.deactivate();
         startStations.clear();
 
         ConfigurationSection startStationsSection = Islands.getConfigHandler().getStartStations();
@@ -37,21 +38,30 @@ public class StartStationManager implements Listener {
             if (x == null || z == null || leverLoc == null) continue;
 
             String[] xSplit = x.split(";"), zSplit = z.split(";"), leverSplit = leverLoc.split(";");
-            int x1, x2, z1, z2;
+
+            ChatColor color;
             Block lever;
+            int x1, x2, z1, z2;
 
             try {
+                lever = Islands.getWorldHandler().getMainWorld().getBlockAt(Integer.parseInt(leverSplit[0]), Integer.parseInt(leverSplit[1]), Integer.parseInt(leverSplit[2]));
                 x1 = Integer.parseInt(xSplit[0]);
                 x2 = Integer.parseInt(xSplit[1]);
                 z1 = Integer.parseInt(zSplit[0]);
                 z2 = Integer.parseInt(zSplit[1]);
-                lever = Islands.getWorldHandler().getMainWorld().getBlockAt(Integer.parseInt(leverSplit[0]), Integer.parseInt(leverSplit[1]), Integer.parseInt(leverSplit[2]));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 continue;
             }
 
-            startStations.put(lever, new StartStation(lever, x1, x2, z1, z2));
+            try {
+                color = ChatColor.valueOf(id);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            startStations.put(lever, new StartStation(color, lever, x1, x2, z1, z2));
 
         }
 
