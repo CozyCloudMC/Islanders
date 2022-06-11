@@ -12,4 +12,10 @@ public class NpcHandler {
         REGISTRY = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
     }
 
+    /**
+     * Gets the NPCRegistry for this plugin. NPCs created with this registry will not persist after the plugin disables.
+     * @return this plugin's NPCRegistry
+     */
+    public NPCRegistry getRegistry() {return REGISTRY;}
+
 }
