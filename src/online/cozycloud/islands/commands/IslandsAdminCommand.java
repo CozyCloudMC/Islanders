@@ -24,7 +24,7 @@ public class IslandsAdminCommand implements TabExecutor {
 
             if (sender.hasPermission("islands.admin")) {
 
-                String usage = ChatColor.RED + "Usage: /" + label + " <reload|worlds|tp|test>";
+                String usage = ChatColor.RED + "Usage: /" + label + " <reload|worlds|tp|delete>";
 
                 if (args.length >= 1) {
 
