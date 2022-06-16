@@ -1,6 +1,6 @@
 package online.cozycloud.islands.mechanics.worlds;
 
-import online.cozycloud.islands.local.LocalIslandManager;
+import online.cozycloud.islands.Utils;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;
@@ -12,12 +12,12 @@ public class TemplateBiomeProvider extends BiomeProvider {
 
     @Override
     public @NotNull Biome getBiome(@NotNull WorldInfo worldInfo, int i, int i1, int i2) {
-        return LocalIslandManager.getOutterBiome(worldInfo.getEnvironment());
+        return Utils.getOutterBiome(worldInfo.getEnvironment());
     }
 
     @Override
     public @NotNull List<Biome> getBiomes(@NotNull WorldInfo worldInfo) {
-        return List.of(LocalIslandManager.getOutterBiome(worldInfo.getEnvironment()));
+        return List.of(Utils.getOutterBiome(worldInfo.getEnvironment()));
     }
 
 }
