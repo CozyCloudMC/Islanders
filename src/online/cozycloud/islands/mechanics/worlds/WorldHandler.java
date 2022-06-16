@@ -21,6 +21,7 @@ public class WorldHandler {
         WORLD_FOLDER = Bukkit.getWorldContainer();
         Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> mainWorld = Bukkit.getWorlds().get(0), 1);
 
+        Bukkit.getPluginManager().registerEvents(new WorldEvents(), Islands.getInstance());
         Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islands.getInstance());
         Bukkit.getPluginManager().registerEvents(new PortalHandler(), Islands.getInstance());
         loadMainWorlds();
