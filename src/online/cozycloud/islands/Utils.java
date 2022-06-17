@@ -25,7 +25,7 @@ public class Utils {
     public static Biome getOutterBiome(World.Environment environment) {
 
         return switch (environment) {
-            default -> Biome.DEEP_OCEAN;
+            default -> Biome.WARM_OCEAN;
             case NETHER -> Biome.CRIMSON_FOREST;
             case THE_END -> Biome.END_BARRENS;
         };
@@ -40,7 +40,7 @@ public class Utils {
     public static Biome getInnerBiome(World.Environment environment) {
 
         return switch (environment) {
-            default -> Biome.WARM_OCEAN;
+            default -> Biome.OCEAN;
             case NETHER -> Biome.NETHER_WASTES;
             case THE_END -> Biome.END_HIGHLANDS;
         };
