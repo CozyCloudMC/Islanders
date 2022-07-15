@@ -1,11 +1,11 @@
-package online.cozycloud.islands.mechanics.startstations;
+package online.cozycloud.islanders.mechanics.startstations;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.local.LocalIslandManager;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.local.LocalIslandManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Switch;
@@ -37,7 +37,7 @@ public class StartStation {
         Z1 = z1;
         Z2 = z2;
 
-        HOLOGRAM = HologramsAPI.createHologram(Islands.getInstance(), lever.getLocation().clone().add(0.5, 2, 0.5));
+        HOLOGRAM = HologramsAPI.createHologram(Islanders.getInstance(), lever.getLocation().clone().add(0.5, 2, 0.5));
         HOLOGRAM.appendTextLine(COLOR + "" + ChatColor.BOLD + "Start Your Island");
         HOLOGRAM.appendTextLine("Stand in the boat with your team");
         HOLOGRAM.appendTextLine("and flip the lever to begin!");
@@ -69,7 +69,7 @@ public class StartStation {
             if (p != null) players.add(p);
         }
 
-        timer = Bukkit.getScheduler().runTaskTimer(Islands.getInstance(), () -> {
+        timer = Bukkit.getScheduler().runTaskTimer(Islanders.getInstance(), () -> {
 
             if (getPlayersInZone().equals(original)) {
 
@@ -144,7 +144,7 @@ public class StartStation {
         for (Player p : LEVER.getWorld().getPlayers()) {
 
             UUID uuid = p.getUniqueId();
-            if (p.getGameMode() == GameMode.SPECTATOR || !Islands.getLocalIslandManager().getIslandsWithMember(uuid).isEmpty()) continue;
+            if (p.getGameMode() == GameMode.SPECTATOR || !Islanders.getLocalIslandManager().getIslandsWithMember(uuid).isEmpty()) continue;
 
             Location loc = p.getLocation();
             int x = loc.getBlockX(), z = loc.getBlockZ();

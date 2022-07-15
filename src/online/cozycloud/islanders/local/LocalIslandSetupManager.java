@@ -1,7 +1,7 @@
-package online.cozycloud.islands.local;
+package online.cozycloud.islanders.local;
 
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.mechanics.worlds.WorldHandler;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.mechanics.worlds.WorldHandler;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -32,7 +32,7 @@ public class LocalIslandSetupManager {
         if (players.isEmpty()) return;
 
         // SQL operations and file duplication are run asynchronously to avoid lagging the main thread
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             String id = createIslandID();
             ArrayList<UUID> members = new ArrayList<>();
@@ -56,7 +56,7 @@ public class LocalIslandSetupManager {
 
             // World loading must be synchronous
             // Must occur *after* the world folders exist, or it will make its own empty worlds
-            Bukkit.getScheduler().runTask(Islands.getInstance(), () -> {
+            Bukkit.getScheduler().runTask(Islanders.getInstance(), () -> {
 
                 World world = setUpWorld(id, World.Environment.NORMAL);
 
@@ -65,7 +65,7 @@ public class LocalIslandSetupManager {
                     return;
                 }
 
-                LocalIsland island = Islands.getLocalIslandManager().loadIsland(id, members);
+                LocalIsland island = Islanders.getLocalIslandManager().loadIsland(id, members);
 
                 for (Player p : players) {
                     island.spawn(p);
@@ -107,7 +107,7 @@ public class LocalIslandSetupManager {
      */
     private void duplicateTemplate(String id, World.Environment environment) throws IOException {
 
-        File worldFolder = Islands.getWorldHandler().getWorldFolder();
+        File worldFolder = Islanders.getWorldHandler().getWorldFolder();
         String suffix = WorldHandler.getWorldSuffix(environment);
 
         String dimFolder = switch (environment) {
@@ -116,7 +116,7 @@ public class LocalIslandSetupManager {
             case THE_END -> "/DIM1";
         };
 
-        File templateRegion = new File(worldFolder + "/" + Islands.getConfigHandler().getLocalTemplateName() + suffix + dimFolder, "region");
+        File templateRegion = new File(worldFolder + "/" + Islanders.getConfigHandler().getLocalTemplateName() + suffix + dimFolder, "region");
         File newRegion = new File(worldFolder + "/" + id + suffix + dimFolder, "region");
 
         FileUtils.copyDirectory(templateRegion, newRegion, false);
@@ -131,7 +131,7 @@ public class LocalIslandSetupManager {
      */
     private void createData(String id, List<UUID> members) throws SQLException {
         String insertCmd = "INSERT INTO local_islands(id, members, last_active) VALUES ('" + id + "', '" + LocalIslandManager.membersToString(members) + "', '" + System.currentTimeMillis() + "');";
-        Islands.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
+        Islanders.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
     }
 
     /**
@@ -169,9 +169,9 @@ public class LocalIslandSetupManager {
     public void deleteIsland(String id, @Nullable CommandSender sender) {
 
         if (sender != null) sender.sendMessage(ChatColor.RED + "Deleting island...");
-        Islands.getLocalIslandManager().unloadIsland(id); // Must be synchronous
+        Islanders.getLocalIslandManager().unloadIsland(id); // Must be synchronous
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             try {
                 deleteTemplates(id);
@@ -198,7 +198,7 @@ public class LocalIslandSetupManager {
      */
     private void deleteTemplates(String id) throws IOException {
 
-        File worldFolder = Islands.getWorldHandler().getWorldFolder();
+        File worldFolder = Islanders.getWorldHandler().getWorldFolder();
 
         for (World.Environment env : WorldHandler.getValidEnvironments()) {
             File file = new File(worldFolder, id + WorldHandler.getWorldSuffix(env));
@@ -214,7 +214,7 @@ public class LocalIslandSetupManager {
      */
     private void deleteData(String id) throws SQLException {
         String deleteCmd = "DELETE FROM local_islands WHERE id = '" + id + "';";
-        Islands.getSqlHandler().getConnection().prepareStatement(deleteCmd).executeUpdate();
+        Islanders.getSqlHandler().getConnection().prepareStatement(deleteCmd).executeUpdate();
     }
 
     /**
@@ -227,7 +227,7 @@ public class LocalIslandSetupManager {
     public void addWorld(String id, World.Environment environment) {
 
         // Prevents the method from being used if the world already exists.
-        LocalIsland island = Islands.getLocalIslandManager().getIsland(id);
+        LocalIsland island = Islanders.getLocalIslandManager().getIsland(id);
         if (island != null && island.hasWorld(environment)) return;
 
         // Prevents multiple worlds being created at the same time due to spam; 5 second cooldown
@@ -237,7 +237,7 @@ public class LocalIslandSetupManager {
 
         dimensionCreationCooldowns.put(cooldownKey, System.currentTimeMillis());
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             try {
                 duplicateTemplate(id, environment);
@@ -246,7 +246,7 @@ public class LocalIslandSetupManager {
                 return;
             }
 
-            Bukkit.getScheduler().runTask(Islands.getInstance(), () -> setUpWorld(id, environment));
+            Bukkit.getScheduler().runTask(Islanders.getInstance(), () -> setUpWorld(id, environment));
 
         });
 

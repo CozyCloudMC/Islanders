@@ -1,10 +1,10 @@
-package online.cozycloud.islands.mechanics.worlds;
+package online.cozycloud.islanders.mechanics.worlds;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.Utils;
-import online.cozycloud.islands.local.LocalIsland;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.Utils;
+import online.cozycloud.islanders.local.LocalIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ public class WorldEvents implements Listener {
      */
     private void runBoundsCheck() {
 
-        Bukkit.getScheduler().runTaskTimer(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskTimer(Islanders.getInstance(), () -> {
 
             for (Player p : Bukkit.getOnlinePlayers()) {
 
@@ -53,7 +53,7 @@ public class WorldEvents implements Listener {
 
         Player player = e.getPlayer();
         World world = player.getWorld();
-        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+        LocalIsland island = Islanders.getLocalIslandManager().getIsland(world);
 
         World respawnWorld = island != null ? island.getWorld(World.Environment.NORMAL, true) : world;
         if (respawnWorld != null) e.setRespawnLocation(respawnWorld.getSpawnLocation());
@@ -88,7 +88,7 @@ public class WorldEvents implements Listener {
         }
 
         // Hides all death messages in the spawn world
-        if (player.getWorld().equals(Islands.getWorldHandler().getMainWorld())) e.setDeathMessage(null);
+        if (player.getWorld().equals(Islanders.getWorldHandler().getMainWorld())) e.setDeathMessage(null);
 
     }
 

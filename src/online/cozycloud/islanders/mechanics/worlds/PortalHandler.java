@@ -1,8 +1,8 @@
-package online.cozycloud.islands.mechanics.worlds;
+package online.cozycloud.islanders.mechanics.worlds;
 
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.local.LocalIsland;
-import online.cozycloud.islands.local.LocalIslandManager;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.local.LocalIsland;
+import online.cozycloud.islanders.local.LocalIslandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class PortalHandler implements Listener {
      */
     private void runAbortTPCheck() {
 
-        Bukkit.getScheduler().runTaskTimer(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskTimer(Islanders.getInstance(), () -> {
 
             for (Player p : new ArrayList<>(teleporting.keySet())) {
 
@@ -103,11 +103,11 @@ public class PortalHandler implements Listener {
 
         // Creates a local island's nether if it does not exist
         if (world.getEnvironment() != World.Environment.NETHER) {
-            LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+            LocalIsland island = Islanders.getLocalIslandManager().getIsland(world);
             if (island != null && !island.hasWorld(World.Environment.NETHER)) LocalIslandManager.getLocalIslandSetupManager().addWorld(island.getID(), World.Environment.NETHER);
         }
 
-        teleporting.put(player, Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> {
+        teleporting.put(player, Bukkit.getScheduler().runTaskLater(Islanders.getInstance(), () -> {
 
             if (player.isOnline() && isInNetherPortal(player)) {
                 netherPortalTeleport(player);
@@ -126,7 +126,7 @@ public class PortalHandler implements Listener {
 
         World world = player.getWorld();
         World.Environment toEnvironment = world.getEnvironment() != World.Environment.NETHER ? World.Environment.NETHER : World.Environment.NORMAL;
-        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+        LocalIsland island = Islanders.getLocalIslandManager().getIsland(world);
 
         // Does not attempt to load world in case the world creation is currently taking place
         World toWorld = island != null ? island.getWorld(toEnvironment, false) : WorldHandler.getRelatedDimension(world, toEnvironment);
@@ -142,7 +142,7 @@ public class PortalHandler implements Listener {
 
         World world = player.getWorld();
         World.Environment toEnvironment = world.getEnvironment() != World.Environment.THE_END ? World.Environment.THE_END : World.Environment.NORMAL;
-        LocalIsland island = Islands.getLocalIslandManager().getIsland(world);
+        LocalIsland island = Islanders.getLocalIslandManager().getIsland(world);
 
         // Creates a local island's end if it does not exist
         if (world.getEnvironment() != World.Environment.THE_END && island != null && !island.hasWorld(World.Environment.THE_END))

@@ -1,13 +1,13 @@
-name: Islands
+name: Islanders
 authors: [ChickenSaysBak, CozyCloud, mangoman69420, Vulcran7567]
 version: ${project.version}
 api-version: 1.19
 depend: [FastAsyncWorldEdit, Citizens, HolographicDisplays]
 libraries: [commons-io:commons-io:2.11.0]
-main: online.cozycloud.islands.Islands
+main: online.cozycloud.islanders.Islanders
 commands:
-  islands:
+  islanders:
     aliases: [is, island]
-  islandsadmin:
+  islandersadmin:
     aliases: [isa]
-    permission: islands.admin
+    permission: islanders.admin

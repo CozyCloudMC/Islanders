@@ -1,4 +1,4 @@
-package online.cozycloud.islands.mechanics.worlds;
+package online.cozycloud.islanders.mechanics.worlds;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

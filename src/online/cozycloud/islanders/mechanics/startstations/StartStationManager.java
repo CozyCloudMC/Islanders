@@ -1,6 +1,6 @@
-package online.cozycloud.islands.mechanics.startstations;
+package online.cozycloud.islanders.mechanics.startstations;
 
-import online.cozycloud.islands.Islands;
+import online.cozycloud.islanders.Islanders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +20,7 @@ public class StartStationManager implements Listener {
     private HashMap<Block, StartStation> startStations = new HashMap<>();
 
     public StartStationManager() {
-        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), this::reload, 1);
+        Bukkit.getScheduler().runTaskLater(Islanders.getInstance(), this::reload, 1);
     }
 
     public void reload() {
@@ -28,7 +28,7 @@ public class StartStationManager implements Listener {
         for (StartStation ss : startStations.values()) ss.deactivate();
         startStations.clear();
 
-        ConfigurationSection startStationsSection = Islands.getConfigHandler().getStartStations();
+        ConfigurationSection startStationsSection = Islanders.getConfigHandler().getStartStations();
         if (startStationsSection == null) return;
 
         for (String id : startStationsSection.getKeys(false)) {
@@ -44,7 +44,7 @@ public class StartStationManager implements Listener {
             int x1, x2, z1, z2;
 
             try {
-                lever = Islands.getWorldHandler().getMainWorld().getBlockAt(Integer.parseInt(leverSplit[0]), Integer.parseInt(leverSplit[1]), Integer.parseInt(leverSplit[2]));
+                lever = Islanders.getWorldHandler().getMainWorld().getBlockAt(Integer.parseInt(leverSplit[0]), Integer.parseInt(leverSplit[1]), Integer.parseInt(leverSplit[2]));
                 x1 = Integer.parseInt(xSplit[0]);
                 x2 = Integer.parseInt(xSplit[1]);
                 z1 = Integer.parseInt(zSplit[0]);
@@ -76,7 +76,7 @@ public class StartStationManager implements Listener {
         if (e.getHand() != EquipmentSlot.HAND || e.getAction() != Action.RIGHT_CLICK_BLOCK || block == null || block.getType() != Material.LEVER) return;
 
         // Ran later so lever's BlockData updates
-        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLater(Islanders.getInstance(), () -> {
 
             if (!startStations.containsKey(block)) return;
 

@@ -1,4 +1,4 @@
-package online.cozycloud.islands.mechanics.npcs;
+package online.cozycloud.islanders.mechanics.npcs;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;

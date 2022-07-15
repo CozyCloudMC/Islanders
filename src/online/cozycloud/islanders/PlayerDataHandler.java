@@ -1,6 +1,6 @@
-package online.cozycloud.islands;
+package online.cozycloud.islanders;
 
-import online.cozycloud.islands.local.LocalIsland;
+import online.cozycloud.islanders.local.LocalIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -49,7 +49,7 @@ public class PlayerDataHandler implements Listener {
         // Gets last world
         String selectCmd = "SELECT world FROM player_data WHERE uuid = '" + uuid + "';";
 
-        Connection connection = Islands.getSqlHandler().getConnection();
+        Connection connection = Islanders.getSqlHandler().getConnection();
         connection.prepareStatement(insertCmd).executeUpdate();
         ResultSet result = connection.prepareStatement(selectCmd).executeQuery();
 
@@ -61,9 +61,9 @@ public class PlayerDataHandler implements Listener {
             if (world != null && world.startsWith("0")) {
 
                 String islandID = world.split("_")[0];
-                LocalIsland island = Islands.getLocalIslandManager().getIsland(islandID);
+                LocalIsland island = Islanders.getLocalIslandManager().getIsland(islandID);
 
-                if (island != null) Bukkit.getScheduler().runTask(Islands.getInstance(), island::loadWorlds); // Sync
+                if (island != null) Bukkit.getScheduler().runTask(Islanders.getInstance(), island::loadWorlds); // Sync
 
             }
 
@@ -77,7 +77,7 @@ public class PlayerDataHandler implements Listener {
         Player player = e.getPlayer();
         World world = player.getWorld();
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             try {
                 updateLastWorld(player, world);
@@ -102,7 +102,7 @@ public class PlayerDataHandler implements Listener {
         String insertCmd = "INSERT INTO player_data(uuid, name, world) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', '" + worldName + "') " +
                 "ON DUPLICATE KEY UPDATE world = '" + worldName + "';";
 
-        Islands.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
+        Islanders.getSqlHandler().getConnection().prepareStatement(insertCmd).executeUpdate();
 
     }
 
@@ -113,7 +113,7 @@ public class PlayerDataHandler implements Listener {
         World world = player.getWorld();
 
         e.setJoinMessage(null);
-        if (!Islands.getLocalIslandManager().isIslandWorld(world)) player.teleport(world.getSpawnLocation());
+        if (!Islanders.getLocalIslandManager().isIslandWorld(world)) player.teleport(world.getSpawnLocation());
 
     }
 

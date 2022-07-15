@@ -1,6 +1,6 @@
-package online.cozycloud.islands.mechanics.worlds;
+package online.cozycloud.islanders.mechanics.worlds;
 
-import online.cozycloud.islands.Utils;
+import online.cozycloud.islanders.Utils;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.WorldInfo;

@@ -1,8 +1,8 @@
-package online.cozycloud.islands.commands;
+package online.cozycloud.islanders.commands;
 
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.local.LocalIsland;
-import online.cozycloud.islands.local.LocalIslandManager;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.local.LocalIsland;
+import online.cozycloud.islanders.local.LocalIslandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -15,24 +15,24 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IslandsAdminCommand implements TabExecutor {
+public class IslandersAdminCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
-        if (cmd.getName().equalsIgnoreCase("islandsadmin")) {
+        if (cmd.getName().equalsIgnoreCase("islandersadmin")) {
 
-            if (sender.hasPermission("islands.admin")) {
+            if (sender.hasPermission("islanders.admin")) {
 
-                String usage = ChatColor.RED + "Usage: /" + label + " <reload|worlds|tp|delete>";
+                String usage = ChatColor.RED + "Usage: /" + label + " <reload|worlds|tp|delete|test>";
 
                 if (args.length >= 1) {
 
                     if (args[0].equalsIgnoreCase("reload")) {
 
-                        Islands.getConfigHandler().reload();
-                        Islands.getWorldHandler().loadMainWorlds();
-                        Islands.getStartStationManager().reload();
+                        Islanders.getConfigHandler().reload();
+                        Islanders.getWorldHandler().loadMainWorlds();
+                        Islanders.getStartStationManager().reload();
 
                         sender.sendMessage(ChatColor.GREEN + "Plugin reloaded!");
 
@@ -87,7 +87,7 @@ public class IslandsAdminCommand implements TabExecutor {
 
         List<String> result = new ArrayList<>();
 
-        if (cmd.getName().equalsIgnoreCase("islandsadmin")) {
+        if (cmd.getName().equalsIgnoreCase("islandersadmin")) {
 
             switch (args.length) {
 
@@ -100,7 +100,7 @@ public class IslandsAdminCommand implements TabExecutor {
                         if (name.toLowerCase().startsWith(args[1].toLowerCase())) result.add(name); // Hides irrelevant results
                     }
 
-                    else if (args[0].equalsIgnoreCase("delete")) for (LocalIsland island : Islands.getLocalIslandManager().getIslands()) {
+                    else if (args[0].equalsIgnoreCase("delete")) for (LocalIsland island : Islanders.getLocalIslandManager().getIslands()) {
                         String name = island.getID();
                         if (name.toLowerCase().startsWith(args[1].toLowerCase())) result.add(name);
                     }

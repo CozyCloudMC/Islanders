@@ -1,18 +1,18 @@
-package online.cozycloud.islands;
+package online.cozycloud.islanders;
 
-import online.cozycloud.islands.commands.IslandsAdminCommand;
-import online.cozycloud.islands.commands.IslandsCommand;
-import online.cozycloud.islands.local.LocalIslandManager;
-import online.cozycloud.islands.mechanics.npcs.NpcHandler;
-import online.cozycloud.islands.mechanics.startstations.StartStationManager;
-import online.cozycloud.islands.mechanics.trees.TreeMechanics;
-import online.cozycloud.islands.mechanics.worlds.WorldHandler;
+import online.cozycloud.islanders.commands.IslandersAdminCommand;
+import online.cozycloud.islanders.commands.IslandersCommand;
+import online.cozycloud.islanders.local.LocalIslandManager;
+import online.cozycloud.islanders.mechanics.npcs.NpcHandler;
+import online.cozycloud.islanders.mechanics.startstations.StartStationManager;
+import online.cozycloud.islanders.mechanics.trees.TreeMechanics;
+import online.cozycloud.islanders.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Islands extends JavaPlugin {
+public class Islanders extends JavaPlugin {
 
-    private static Islands instance;
+    private static Islanders instance;
     private static ConfigHandler configHandler;
     private static SqlHandler sqlHandler;
     private static WorldHandler worldHandler;
@@ -31,8 +31,8 @@ public class Islands extends JavaPlugin {
         localIslandManager = new LocalIslandManager();
         startStationManager = new StartStationManager();
 
-        getCommand("islands").setExecutor(new IslandsCommand());
-        getCommand("islandsadmin").setExecutor(new IslandsAdminCommand());
+        getCommand("islanders").setExecutor(new IslandersCommand());
+        getCommand("islandersadmin").setExecutor(new IslandersAdminCommand());
 
         Bukkit.getPluginManager().registerEvents(new TreeMechanics(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDataHandler(), this);
@@ -40,7 +40,7 @@ public class Islands extends JavaPlugin {
 
     }
 
-    public static Islands getInstance() {return instance;}
+    public static Islanders getInstance() {return instance;}
     public static ConfigHandler getConfigHandler() {return configHandler;}
     public static SqlHandler getSqlHandler() {return sqlHandler;}
     public static WorldHandler getWorldHandler() {return worldHandler;}

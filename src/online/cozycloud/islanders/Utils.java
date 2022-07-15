@@ -1,4 +1,4 @@
-package online.cozycloud.islands;
+package online.cozycloud.islanders;
 
 import org.bukkit.GameMode;
 import org.bukkit.World;

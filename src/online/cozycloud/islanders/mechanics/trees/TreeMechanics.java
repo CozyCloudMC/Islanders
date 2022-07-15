@@ -1,4 +1,4 @@
-package online.cozycloud.islands.mechanics.trees;
+package online.cozycloud.islanders.mechanics.trees;
 
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -7,7 +7,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
-import online.cozycloud.islands.Islands;
+import online.cozycloud.islanders.Islanders;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -120,7 +120,7 @@ public class TreeMechanics implements Listener {
      */
     private void pasteTree(CustomTree type, Location loc) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.getWorld()));
             session.setMask(treeMask);

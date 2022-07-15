@@ -1,4 +1,4 @@
-package online.cozycloud.islands;
+package online.cozycloud.islanders;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,7 +20,7 @@ public class ConfigHandler {
     private ConfigurationSection startStations;
 
     protected ConfigHandler() {
-        FILE = new File(Islands.getInstance().getDataFolder(), "config.yml");
+        FILE = new File(Islanders.getInstance().getDataFolder(), "config.yml");
         reload();
     }
 
@@ -28,7 +28,7 @@ public class ConfigHandler {
 
     // The following getters refer to config values and return defaults if no value exists.
     public String getSqlAddress() {return sqlAddress != null ? sqlAddress : "127.0.0.1:3306";}
-    public String getSqlDatabase() {return sqlDatabase != null ? sqlDatabase : "islands";}
+    public String getSqlDatabase() {return sqlDatabase != null ? sqlDatabase : "islanders";}
     public String getSqlUsername() {return sqlUsername != null ? sqlUsername : "root";}
     public String getSqlPassword() {return sqlPassword != null ? sqlPassword : "";}
     public String getLocalTemplateName() {return localTemplateName != null ? localTemplateName : "template";}

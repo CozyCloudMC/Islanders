@@ -1,6 +1,6 @@
-package online.cozycloud.islands.mechanics.trees;
+package online.cozycloud.islanders.mechanics.trees;
 
-import online.cozycloud.islands.Islands;
+import online.cozycloud.islanders.Islanders;
 import org.bukkit.Material;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public enum CustomTree {
     CustomTree(String name) {NAME = name;}
 
     public File getFile() {
-        return new File(Islands.getInstance().getDataFolder() + "/schematics/trees", NAME + ".schem");
+        return new File(Islanders.getInstance().getDataFolder() + "/schematics/trees", NAME + ".schem");
     }
 
     public Material getSapling() {

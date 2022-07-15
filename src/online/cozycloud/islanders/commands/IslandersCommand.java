@@ -1,7 +1,7 @@
-package online.cozycloud.islands.commands;
+package online.cozycloud.islanders.commands;
 
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.local.LocalIsland;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.local.LocalIsland;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class IslandsCommand implements TabExecutor {
+public class IslandersCommand implements TabExecutor {
 
     private HashMap<UUID, Long> abandonConfirmation = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
-        if (cmd.getName().equalsIgnoreCase("islands") && sender instanceof Player player) {
+        if (cmd.getName().equalsIgnoreCase("islanders") && sender instanceof Player player) {
 
             String usage = ChatColor.RED + "Usage: /" + label + " <go|abandon>";
             UUID uuid = player.getUniqueId();
@@ -30,7 +30,7 @@ public class IslandsCommand implements TabExecutor {
 
                 if (args[0].equalsIgnoreCase("go")) {
 
-                    LocalIsland island = Islands.getLocalIslandManager().getMainIsland(uuid);
+                    LocalIsland island = Islanders.getLocalIslandManager().getMainIsland(uuid);
 
                     if (island != null) {
                         sender.sendMessage(ChatColor.WHITE + "Teleporting to your island...");
@@ -43,7 +43,7 @@ public class IslandsCommand implements TabExecutor {
 
                 else if (args[0].equalsIgnoreCase("abandon")) {
 
-                    LocalIsland island = Islands.getLocalIslandManager().getMainIsland(uuid);
+                    LocalIsland island = Islanders.getLocalIslandManager().getMainIsland(uuid);
 
                     if (island != null) {
 
@@ -81,7 +81,7 @@ public class IslandsCommand implements TabExecutor {
 
         List<String> result = new ArrayList<>();
 
-        if (cmd.getName().equalsIgnoreCase("islands")) {
+        if (cmd.getName().equalsIgnoreCase("islanders")) {
 
             switch (args.length) {
                 case 1 -> result.addAll(List.of("go", "abandon"));

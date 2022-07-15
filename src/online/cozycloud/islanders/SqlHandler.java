@@ -1,4 +1,4 @@
-package online.cozycloud.islands;
+package online.cozycloud.islanders;
 
 import org.bukkit.Bukkit;
 
@@ -16,7 +16,7 @@ public class SqlHandler {
 
     protected SqlHandler() {
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             try {
                 createTables();
@@ -61,7 +61,7 @@ public class SqlHandler {
 
         if (connection == null || !connection.isValid(3)) {
 
-            ConfigHandler config = Islands.getConfigHandler();
+            ConfigHandler config = Islanders.getConfigHandler();
 
             connection = DriverManager.getConnection("jdbc:mysql://" + config.getSqlAddress() + "/" +
                     config.getSqlDatabase(), config.getSqlUsername(), config.getSqlPassword());

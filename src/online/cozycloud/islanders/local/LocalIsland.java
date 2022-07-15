@@ -1,7 +1,7 @@
-package online.cozycloud.islands.local;
+package online.cozycloud.islanders.local;
 
-import online.cozycloud.islands.Islands;
-import online.cozycloud.islands.mechanics.worlds.WorldHandler;
+import online.cozycloud.islanders.Islanders;
+import online.cozycloud.islanders.mechanics.worlds.WorldHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -38,17 +38,17 @@ public class LocalIsland {
      */
     private void loadData() {
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             if (members == null) try {
                 String selectCmd = "SELECT members FROM local_islands WHERE id = '" + ID + "';";
-                ResultSet result = Islands.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
+                ResultSet result = Islanders.getSqlHandler().getConnection().prepareStatement(selectCmd).executeQuery();
                 while (result.next()) members = new ArrayList<>(LocalIslandManager.membersToList(result.getString("members")));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            for (UUID uuid : members) Islands.getLocalIslandManager().assignIslandToMember(uuid, ID);
+            for (UUID uuid : members) Islanders.getLocalIslandManager().assignIslandToMember(uuid, ID);
 
         });
 
@@ -81,14 +81,14 @@ public class LocalIsland {
         else {
 
             Player player = Bukkit.getPlayer(member);
-            if (player != null) player.teleport(Islands.getWorldHandler().getMainWorld().getSpawnLocation());
-            Islands.getLocalIslandManager().unassignIslandToMember(member, ID);
+            if (player != null) player.teleport(Islanders.getWorldHandler().getMainWorld().getSpawnLocation());
+            Islanders.getLocalIslandManager().unassignIslandToMember(member, ID);
 
-            Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
                 try {
                     String updateCmd = "UPDATE local_islands SET members = '" + LocalIslandManager.membersToString(members) + "' WHERE id = '" + ID + "';";
-                    Islands.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
+                    Islanders.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -105,7 +105,7 @@ public class LocalIsland {
      */
     public void loadWorlds() {
 
-        File worldFolder = Islands.getWorldHandler().getWorldFolder();
+        File worldFolder = Islanders.getWorldHandler().getWorldFolder();
 
         for (World.Environment env : WorldHandler.getValidEnvironments()) {
 
@@ -125,7 +125,7 @@ public class LocalIsland {
 
         for (World.Environment env : WorldHandler.getValidEnvironments()) {
             String worldName = ID + WorldHandler.getWorldSuffix(env);
-            Islands.getWorldHandler().safelyUnloadWorld(worldName, true);
+            Islanders.getWorldHandler().safelyUnloadWorld(worldName, true);
         }
 
     }
@@ -135,11 +135,11 @@ public class LocalIsland {
      */
     public void updateActivity() {
 
-        Bukkit.getScheduler().runTaskAsynchronously(Islands.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Islanders.getInstance(), () -> {
 
             try {
                 String updateCmd = "UPDATE local_islands SET last_active = '" + System.currentTimeMillis() + "' WHERE id = '" + ID + "';";
-                Islands.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
+                Islanders.getSqlHandler().getConnection().prepareStatement(updateCmd).executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -208,7 +208,7 @@ public class LocalIsland {
      * @return true if the world has been created
      */
     public boolean hasWorld(World.Environment environment) {
-        File file = new File(Islands.getWorldHandler().getWorldFolder(), ID + WorldHandler.getWorldSuffix(environment));
+        File file = new File(Islanders.getWorldHandler().getWorldFolder(), ID + WorldHandler.getWorldSuffix(environment));
         return file.exists();
     }
 

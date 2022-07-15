@@ -1,6 +1,6 @@
-package online.cozycloud.islands.mechanics.worlds;
+package online.cozycloud.islanders.mechanics.worlds;
 
-import online.cozycloud.islands.Islands;
+import online.cozycloud.islanders.Islanders;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -19,11 +19,11 @@ public class WorldHandler {
     public WorldHandler() {
 
         WORLD_FOLDER = Bukkit.getWorldContainer();
-        Bukkit.getScheduler().runTaskLater(Islands.getInstance(), () -> mainWorld = Bukkit.getWorlds().get(0), 1);
+        Bukkit.getScheduler().runTaskLater(Islanders.getInstance(), () -> mainWorld = Bukkit.getWorlds().get(0), 1);
 
-        Bukkit.getPluginManager().registerEvents(new WorldEvents(), Islands.getInstance());
-        Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islands.getInstance());
-        Bukkit.getPluginManager().registerEvents(new PortalHandler(), Islands.getInstance());
+        Bukkit.getPluginManager().registerEvents(new WorldEvents(), Islanders.getInstance());
+        Bukkit.getPluginManager().registerEvents(new DragonPrevention(), Islanders.getInstance());
+        Bukkit.getPluginManager().registerEvents(new PortalHandler(), Islanders.getInstance());
         loadMainWorlds();
 
     }
@@ -36,7 +36,7 @@ public class WorldHandler {
      */
     public void loadMainWorlds() {
 
-        ConfigurationSection loadWorlds = Islands.getConfigHandler().getLoadWorlds();
+        ConfigurationSection loadWorlds = Islanders.getConfigHandler().getLoadWorlds();
 
         for (String worldName : loadWorlds.getKeys(false)) {
 
@@ -63,7 +63,7 @@ public class WorldHandler {
 
         if (world == null) return;
 
-        for (Player p : new ArrayList<>(world.getPlayers())) p.teleport(Islands.getWorldHandler().getMainWorld().getSpawnLocation());
+        for (Player p : new ArrayList<>(world.getPlayers())) p.teleport(Islanders.getWorldHandler().getMainWorld().getSpawnLocation());
         Bukkit.unloadWorld(world, save);
 
     }
